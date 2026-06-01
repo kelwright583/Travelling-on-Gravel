@@ -26,6 +26,13 @@ export const metadata: Metadata = {
   },
   description: 'Overland Africa travel — less glamping, more gravel.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  manifest: '/manifest.webmanifest',
+  themeColor: '#15150F',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Gravel',
+  },
 }
 
 // Cache theme at the CDN/ISR layer — revalidated when admin saves theme.

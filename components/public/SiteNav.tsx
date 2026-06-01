@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link, useRouter, usePathname } from '@/i18n/navigation'
+import { PwaInstallButton } from './PwaInstallButton'
 
 export function SiteNav() {
   const t = useTranslations('nav')
@@ -87,6 +88,7 @@ export function SiteNav() {
           >
             {otherLocale.toUpperCase()}
           </button>
+          <PwaInstallButton />
         </nav>
 
         {/* Mobile hamburger */}
