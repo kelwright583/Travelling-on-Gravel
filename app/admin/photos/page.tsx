@@ -1,17 +1,28 @@
-import { Image as ImageIcon } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import { PhotosClient } from './PhotosClient'
 
 export const metadata = { title: 'Photos | Base Camp' }
 
-export default function PhotosPage() {
+export default async function PhotosPage() {
+  const supabase = await createClient()
+  const { data: assets } = await supabase
+    .from('media_assets')
+    .select('id, storage_path, width, height, created_at')
+    .order('created_at', { ascending: false })
+    .limit(200)
+
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
-      <ImageIcon size={40} className="mb-4 text-khaki-deep" aria-hidden="true" />
-      <h1 className="font-display mb-2 text-xl font-800 uppercase tracking-tight text-bone">
-        Photos / Media
-      </h1>
-      <p className="max-w-sm text-sm text-khaki">
-        Drag-and-drop media library with Storage integration coming in Phase 6.
-      </p>
+    <div>
+      <div className="mb-8">
+        <p className="mb-1 text-xs font-700 uppercase tracking-widest text-accent">Base Camp</p>
+        <h1 className="font-display text-2xl font-800 uppercase tracking-tight text-bone">
+          Photos
+        </h1>
+        <p className="mt-1 text-sm text-khaki">
+          Upload images to the media library. Use them as covers for dispatches and adventures.
+        </p>
+      </div>
+      <PhotosClient initialAssets={assets ?? []} />
     </div>
   )
 }

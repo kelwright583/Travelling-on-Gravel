@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { LocalizedInput } from '@/components/admin/LocalizedInput'
 import { FormField } from '@/components/admin/FormField'
 import { SaveBar } from '@/components/admin/SaveBar'
+import { MediaPicker } from '@/components/admin/MediaPicker'
 import { createAdventure, updateAdventure, deleteAdventure, type AdventureState } from './actions'
 import type { Tables } from '@/db/types'
 
@@ -137,6 +138,12 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
             />
           </FormField>
         </div>
+
+        <MediaPicker
+          name="cover_image"
+          defaultValue={adventure?.cover_image}
+          label="Cover Image"
+        />
 
         <LocalizedInput
           label="Excerpt"

@@ -24,6 +24,7 @@ const schema = z.object({
   sort_order: z.string().optional(),
   published: z.string().optional(),
   published_at: z.string().optional(),
+  cover_image: z.string().optional(),
 })
 
 export type AdventureState = { message: string; ok: boolean }
@@ -54,6 +55,7 @@ function buildPayload(raw: z.infer<typeof schema>) {
     sort_order: raw.sort_order ? parseInt(raw.sort_order, 10) : null,
     published: raw.published === 'on',
     published_at: raw.published_at || null,
+    cover_image: raw.cover_image || null,
   }
 }
 
@@ -74,6 +76,7 @@ function extractRaw(formData: FormData) {
     sort_order: (formData.get('sort_order') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
     published_at: (formData.get('published_at') as string) || undefined,
+    cover_image: (formData.get('cover_image') as string) || undefined,
   }
 }
 

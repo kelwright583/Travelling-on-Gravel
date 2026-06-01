@@ -15,6 +15,7 @@ const schema = z.object({
   body_de: z.string().optional(),
   published: z.string().optional(),
   published_at: z.string().optional(),
+  cover_image: z.string().optional(),
 })
 
 export type PostState = { message: string; ok: boolean }
@@ -37,6 +38,7 @@ function buildPayload(raw: z.infer<typeof schema>) {
       : null,
     published: raw.published === 'on',
     published_at: raw.published_at || null,
+    cover_image: raw.cover_image || null,
   }
 }
 
@@ -110,5 +112,6 @@ function extractRaw(formData: FormData) {
     body_de: (formData.get('body_de') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
     published_at: (formData.get('published_at') as string) || undefined,
+    cover_image: (formData.get('cover_image') as string) || undefined,
   }
 }

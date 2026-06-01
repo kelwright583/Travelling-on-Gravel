@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { LocalizedInput } from '@/components/admin/LocalizedInput'
 import { FormField } from '@/components/admin/FormField'
 import { SaveBar } from '@/components/admin/SaveBar'
+import { MediaPicker } from '@/components/admin/MediaPicker'
 import { createPost, updatePost, deletePost, type PostState } from './actions'
 import type { Tables } from '@/db/types'
 
@@ -87,6 +88,12 @@ export function PostEditor({ post }: { post?: Post }) {
             }}
           />
         </FormField>
+
+        <MediaPicker
+          name="cover_image"
+          defaultValue={post?.cover_image}
+          label="Cover Image"
+        />
 
         <LocalizedInput
           label="Excerpt"
