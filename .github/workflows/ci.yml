@@ -2,15 +2,16 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
   pull_request:
-    branches: [main]
+    branches: [master, main]
 
 env:
   # Stub vars so typecheck/build don't fail without real secrets in CI
   NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
   NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder
-  NEXT_PUBLIC_SITE_URL: https://localhost:3000
+  NEXT_PUBLIC_SITE_URL: https://travellingongravel.netlify.app
+  OPENAI_MODEL: gpt-4o-mini
 
 jobs:
   ci:
@@ -33,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm tsc --noEmit
 
       - name: Lint
         run: pnpm lint
