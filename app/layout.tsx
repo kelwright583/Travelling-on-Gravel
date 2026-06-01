@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
 import { unstable_cache } from 'next/cache'
 import { buildCssVars, type ThemeOverrides } from '@/lib/theme/tokens'
@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   description: 'Overland Africa travel — less glamping, more gravel.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   manifest: '/manifest.webmanifest',
-  themeColor: '#15150F',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -52,6 +51,10 @@ const getCachedTheme = unstable_cache(
   ['site-theme'],
   { revalidate: 3600, tags: ['site-theme'] },
 )
+
+export const viewport: Viewport = {
+  themeColor: '#15150F',
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const themeOverrides = await getCachedTheme()
