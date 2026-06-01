@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 
 interface NewsletterFormProps {
   source?: 'hero' | 'footer' | 'inline'
@@ -8,6 +9,9 @@ interface NewsletterFormProps {
 }
 
 export function NewsletterForm({ source = 'inline', compact = false }: NewsletterFormProps) {
+  const t = useTranslations('newsletter')
+  const locale = useLocale()
+
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -25,17 +29,17 @@ export function NewsletterForm({ source = 'inline', compact = false }: Newslette
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source }),
+        body: JSON.stringify({ email, source, locale }),
       })
       const data = await res.json()
       if (!res.ok) {
-        setErrorMsg(data.message ?? 'Something went wrong. Try again.')
+        setErrorMsg(data.message ?? t('errorGeneric'))
         setState('error')
       } else {
         setState('success')
       }
     } catch {
-      setErrorMsg('Network error. Try again.')
+      setErrorMsg(t('errorGeneric'))
       setState('error')
     }
   }
@@ -81,7 +85,7 @@ export function NewsletterForm({ source = 'inline', compact = false }: Newslette
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
+          placeholder={t('placeholder')}
           disabled={state === 'loading'}
           className="flex-1 rounded border border-line bg-ink px-4 py-2.5 text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none disabled:opacity-50"
         />
@@ -90,7 +94,7 @@ export function NewsletterForm({ source = 'inline', compact = false }: Newslette
           disabled={state === 'loading'}
           className="rounded border border-accent bg-accent px-6 py-2.5 text-xs font-700 uppercase tracking-widest text-bone transition-colors hover:bg-accent-soft disabled:opacity-50"
         >
-          {state === 'loading' ? 'Sending…' : 'Subscribe'}
+          {state === 'loading' ? t('submitting') : t('submit')}
         </button>
       </div>
 
