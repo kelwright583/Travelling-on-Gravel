@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter, Montserrat } from 'next/font/google'
-import { buildCssVars } from '@/lib/theme/tokens'
+import { unstable_cache } from 'next/cache'
+import { buildCssVars, type ThemeOverrides } from '@/lib/theme/tokens'
+import { createServiceClient } from '@/lib/supabase/server'
 import './globals.css'
 
 const montserrat = Montserrat({
@@ -26,19 +28,35 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // TODO (Phase 8): read site_settings.theme from DB and pass overrides here.
-  const cssVars = buildCssVars()
+// Cache theme at the CDN/ISR layer — revalidated when admin saves theme.
+const getCachedTheme = unstable_cache(
+  async (): Promise<ThemeOverrides> => {
+    try {
+      const supabase = await createServiceClient()
+      const { data } = await supabase
+        .from('site_settings')
+        .select('theme')
+        .single()
+      return (data?.theme as ThemeOverrides) ?? {}
+    } catch {
+      return {}
+    }
+  },
+  ['site-theme'],
+  { revalidate: 3600, tags: ['site-theme'] },
+)
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const themeOverrides = await getCachedTheme()
+  const cssVars = buildCssVars(themeOverrides)
 
   return (
     <html
       lang="en"
       className={`${montserrat.variable} ${inter.variable} h-full`}
-      // Inline style prevents FOUC on every page load — no client JS needed.
-      style={{ ['--theme-injected' as string]: '1' }}
     >
       <head>
-        {/* Inject brand CSS variables server-side to avoid FOUC */}
+        {/* Inject resolved brand CSS variables server-side to prevent FOUC */}
         <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       </head>
       <body className="flex min-h-full flex-col antialiased">{children}</body>
