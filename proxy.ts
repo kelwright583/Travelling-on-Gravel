@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/routing'
+
+const intlMiddleware = createMiddleware(routing)
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -14,11 +18,23 @@ export async function proxy(request: NextRequest) {
       loginUrl.searchParams.set('next', pathname)
       return NextResponse.redirect(loginUrl)
     }
-
-    // TODO Phase 3: add role check — redirect to 403 if role not in ('admin','editor')
+    return supabaseResponse
   }
 
-  return supabaseResponse
+  // API and admin routes skip i18n
+  if (pathname.startsWith('/api') || pathname.startsWith('/admin')) {
+    return supabaseResponse
+  }
+
+  // Apply next-intl locale routing for public routes
+  const intlResponse = intlMiddleware(request)
+
+  // Merge Supabase session cookies into the intl response so auth stays fresh
+  supabaseResponse.cookies.getAll().forEach(({ name, value, ...options }) => {
+    intlResponse.cookies.set(name, value, options)
+  })
+
+  return intlResponse
 }
 
 export const config = {

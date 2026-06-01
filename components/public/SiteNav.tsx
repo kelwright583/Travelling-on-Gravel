@@ -1,18 +1,30 @@
 'use client'
 
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
-
-const navLinks = [
-  { href: '/dispatches', label: 'Dispatches' },
-  { href: '/adventures', label: 'Adventures' },
-  { href: '/films', label: 'Films' },
-  { href: '/map', label: 'Map' },
-]
+import { useTranslations, useLocale } from 'next-intl'
+import { Link, useRouter, usePathname } from '@/i18n/navigation'
 
 export function SiteNav() {
+  const t = useTranslations('nav')
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const navLinks = [
+    { href: '/dispatches' as const, label: t('dispatches') },
+    { href: '/adventures' as const, label: t('adventures') },
+    { href: '/films' as const, label: t('films') },
+    { href: '/map' as const, label: t('map') },
+  ]
+
+  const otherLocale = locale === 'en' ? 'de' : 'en'
+
+  function switchLocale() {
+    router.replace(pathname, { locale: otherLocale })
+  }
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
@@ -64,8 +76,17 @@ export function SiteNav() {
             href="/dispatches#newsletter"
             className="rounded border border-accent px-4 py-1.5 text-xs font-700 uppercase tracking-widest text-accent transition-colors hover:bg-accent hover:text-bone"
           >
-            Subscribe
+            {t('subscribe')}
           </Link>
+          {/* Locale switcher */}
+          <button
+            type="button"
+            onClick={switchLocale}
+            className="text-xs font-600 uppercase tracking-widest text-khaki-deep transition-colors hover:text-bone"
+            aria-label={`Switch to ${otherLocale.toUpperCase()}`}
+          >
+            {otherLocale.toUpperCase()}
+          </button>
         </nav>
 
         {/* Mobile hamburger */}
@@ -126,8 +147,15 @@ export function SiteNav() {
             className="mt-4 inline-block rounded border border-accent px-4 py-2 text-center text-xs font-700 uppercase tracking-widest text-accent"
             onClick={() => setMenuOpen(false)}
           >
-            Subscribe
+            {t('subscribe')}
           </Link>
+          <button
+            type="button"
+            onClick={() => { switchLocale(); setMenuOpen(false) }}
+            className="mt-3 text-left text-xs font-600 uppercase tracking-widest text-khaki-deep"
+          >
+            {otherLocale.toUpperCase()}
+          </button>
         </nav>
       </div>
     </header>

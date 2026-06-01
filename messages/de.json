@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "dispatches": "Berichte",
+    "adventures": "Abenteuer",
+    "films": "Filme",
+    "map": "Karte",
+    "subscribe": "Abonnieren",
+    "basecamp": "Basislager"
+  },
+  "footer": {
+    "tagline": "Weniger Glamping. Mehr Schotter.",
+    "dispatches": "Berichte",
+    "adventures": "Abenteuer",
+    "films": "Filme",
+    "map": "Karte",
+    "privacy": "Datenschutz",
+    "copyright": "Travelling on Gravel. Alle Rechte vorbehalten."
+  },
+  "hero": {
+    "scrollDown": "Scrollen"
+  },
+  "newsletter": {
+    "placeholder": "deine@email.de",
+    "submit": "Abonnieren",
+    "submitting": "Wird abonniert…",
+    "success": "Prüfe dein Postfach für einen Bestätigungslink.",
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "errorEmail": "Ungültige E-Mail-Adresse.",
+    "consent": "Double Opt-in. Jederzeit abmeldbar. Deine Daten bleiben hier."
+  },
+  "dispatches": {
+    "title": "Berichte",
+    "eyebrow": "Aus dem Gelände",
+    "empty": "Noch keine Berichte. Schau bald wieder vorbei."
+  },
+  "adventures": {
+    "title": "Abenteuer",
+    "eyebrow": "Erfahrungsberichte",
+    "empty": "Noch keine Abenteuer veröffentlicht."
+  },
+  "films": {
+    "title": "Filme",
+    "eyebrow": "Die Schotter-Dateien"
+  },
+  "map": {
+    "title": "Die Schotterkarte",
+    "eyebrow": "Überlandreise Afrika"
+  },
+  "locale": {
+    "switchTo": "English",
+    "current": "DE"
+  }
+}

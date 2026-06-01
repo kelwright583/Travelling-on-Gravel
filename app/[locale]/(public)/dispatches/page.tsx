@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { t } from '@/lib/i18n/types'

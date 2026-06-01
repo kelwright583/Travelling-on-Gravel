@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useEffect, useRef } from 'react'
 import type { Database } from '@/db/types'
 import { t } from '@/lib/i18n/types'

@@ -1,0 +1,53 @@
+{
+  "nav": {
+    "dispatches": "Dispatches",
+    "adventures": "Adventures",
+    "films": "Films",
+    "map": "Map",
+    "subscribe": "Subscribe",
+    "basecamp": "Base Camp"
+  },
+  "footer": {
+    "tagline": "Less glamping. More gravel.",
+    "dispatches": "Dispatches",
+    "adventures": "Adventures",
+    "films": "Films",
+    "map": "Map",
+    "privacy": "Privacy",
+    "copyright": "Travelling on Gravel. All rights reserved."
+  },
+  "hero": {
+    "scrollDown": "Scroll"
+  },
+  "newsletter": {
+    "placeholder": "your@email.com",
+    "submit": "Subscribe",
+    "submitting": "Subscribing…",
+    "success": "Check your inbox for a confirmation link.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorEmail": "Invalid email address.",
+    "consent": "Double opt-in. Unsubscribe any time. Your data stays here."
+  },
+  "dispatches": {
+    "title": "Dispatches",
+    "eyebrow": "From the field",
+    "empty": "No dispatches yet. Check back soon."
+  },
+  "adventures": {
+    "title": "Adventures",
+    "eyebrow": "Field reports",
+    "empty": "No adventures published yet."
+  },
+  "films": {
+    "title": "Films",
+    "eyebrow": "The Gravel Files"
+  },
+  "map": {
+    "title": "The Gravel Map",
+    "eyebrow": "Overland Africa"
+  },
+  "locale": {
+    "switchTo": "Deutsch",
+    "current": "EN"
+  }
+}
