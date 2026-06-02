@@ -3,6 +3,7 @@ import { Inter, Montserrat } from 'next/font/google'
 import { unstable_cache } from 'next/cache'
 import { buildCssVars, type ThemeOverrides } from '@/lib/theme/tokens'
 import { createServiceClient } from '@/lib/supabase/server'
+import { SocialFabs } from '@/components/public/SocialFabs'
 import './globals.css'
 
 const montserrat = Montserrat({
@@ -69,7 +70,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Inject resolved brand CSS variables server-side to prevent FOUC */}
         <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       </head>
-      <body className="flex min-h-full flex-col antialiased">{children}</body>
+      <body className="flex min-h-full flex-col antialiased">
+        {children}
+        <SocialFabs />
+      </body>
     </html>
   )
 }
