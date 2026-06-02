@@ -8,8 +8,12 @@ const intlMiddleware = createMiddleware(routing)
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Forward pathname to server components/layouts via a request header
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-pathname', pathname)
+
   // Refresh Supabase session cookies on every request
-  const { supabaseResponse, user } = await updateSession(request)
+  const { supabaseResponse, user } = await updateSession(request, requestHeaders)
 
   // Protect /admin/* routes (except /admin/login)
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {

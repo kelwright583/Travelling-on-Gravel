@@ -6,8 +6,9 @@ import type { Database } from '@/db/types'
  * Updates the Supabase session inside Next.js proxy (proxy.ts).
  * Call this first in every proxy handler so auth cookies stay fresh.
  */
-export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
+export async function updateSession(request: NextRequest, extraHeaders?: Headers) {
+  const headers = extraHeaders ?? request.headers
+  let supabaseResponse = NextResponse.next({ request: { headers } })
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

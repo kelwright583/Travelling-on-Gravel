@@ -1,15 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
-import { Link, useRouter, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { PwaInstallButton } from './PwaInstallButton'
 
 export function SiteNav() {
   const t = useTranslations('nav')
-  const locale = useLocale()
-  const router = useRouter()
-  const pathname = usePathname()
 
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -20,12 +17,6 @@ export function SiteNav() {
     { href: '/films' as const, label: t('films') },
     { href: '/map' as const, label: t('map') },
   ]
-
-  const otherLocale = locale === 'en' ? 'de' : 'en'
-
-  function switchLocale() {
-    router.replace(pathname, { locale: otherLocale })
-  }
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
@@ -79,15 +70,6 @@ export function SiteNav() {
           >
             {t('subscribe')}
           </Link>
-          {/* Locale switcher */}
-          <button
-            type="button"
-            onClick={switchLocale}
-            className="text-xs font-600 uppercase tracking-widest text-khaki-deep transition-colors hover:text-bone"
-            aria-label={`Switch to ${otherLocale.toUpperCase()}`}
-          >
-            {otherLocale.toUpperCase()}
-          </button>
           <PwaInstallButton />
         </nav>
 
@@ -151,13 +133,6 @@ export function SiteNav() {
           >
             {t('subscribe')}
           </Link>
-          <button
-            type="button"
-            onClick={() => { switchLocale(); setMenuOpen(false) }}
-            className="mt-3 text-left text-xs font-600 uppercase tracking-widest text-khaki-deep"
-          >
-            {otherLocale.toUpperCase()}
-          </button>
         </nav>
       </div>
     </header>
