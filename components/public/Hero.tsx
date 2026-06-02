@@ -62,13 +62,15 @@ export function Hero({ settings }: HeroProps) {
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-[900px]">
         {/* Eyebrow */}
-        <p
-          className="hero-reveal mb-6 text-xs font-600 uppercase tracking-[0.3em] text-accent"
-          style={{ '--delay': '0ms' } as React.CSSProperties}
-        >
-          {location}
-          {coords && <span className="ml-4 text-khaki-deep">{coords}</span>}
-        </p>
+        {(location || coords) && (
+          <p
+            className="hero-reveal mb-6 text-xs font-600 uppercase tracking-[0.3em] text-accent"
+            style={{ '--delay': '0ms' } as React.CSSProperties}
+          >
+            {location}
+            {coords && <span className="ml-4 text-khaki-deep">{coords}</span>}
+          </p>
+        )}
 
         {/* Headline */}
         <h1
