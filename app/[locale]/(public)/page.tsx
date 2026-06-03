@@ -70,7 +70,7 @@ export default async function HomePage() {
         .eq('published', true)
         .order('sort_order', { ascending: true })
         .limit(6),
-      supabase.from('map_pins').select('id', { count: 'exact', head: true }),
+      supabase.from('map_pins').select('id, label, lat, lng, category, country, note, related_post_id'),
     ])
 
   const settings =
@@ -80,8 +80,17 @@ export default async function HomePage() {
   const posts = postsRes.status === 'fulfilled' ? (postsRes.value.data ?? []) : []
   const recipes = recipesRes.status === 'fulfilled' ? (recipesRes.value.data ?? []) : []
   const films = filmsRes.status === 'fulfilled' ? (filmsRes.value.data ?? []) : []
-  const pinCount =
-    pinsRes.status === 'fulfilled' ? (pinsRes.value.count ?? 0) : 0
+  const rawPins = pinsRes.status === 'fulfilled' ? (pinsRes.value.data ?? []) : []
+  const mapPins = rawPins.map((p) => ({
+    id: p.id,
+    label: p.label,
+    lat: p.lat,
+    lng: p.lng,
+    category: p.category,
+    country: p.country,
+    note: p.note ? String((p.note as Record<string, unknown>)['en'] ?? '') : null,
+    related_post_id: p.related_post_id,
+  }))
 
   if (!settings) {
     console.warn('[HomePage] site_settings not seeded — rendering empty states')
@@ -105,8 +114,8 @@ export default async function HomePage() {
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <CastIronPreview recipes={recipes as any} />
 
-      {/* 6. Map placeholder (Phase 7 → full Google Map) */}
-      <MapPlaceholder pinCount={pinCount} />
+      {/* 6. Map section — embedded Google Map */}
+      <MapPlaceholder pins={mapPins} />
 
       {/* 7. Films strip */}
       <FilmsStrip films={films} />

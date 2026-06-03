@@ -32,7 +32,7 @@ export async function applyTheme(overrides: ThemeOverrides): Promise<ThemeAction
 
   if (error) return { ok: false, message: error.message }
 
-  revalidateTag('site-theme')
+  revalidateTag('site-theme', 'max')
   revalidatePath('/', 'layout')
   return { ok: true, message: 'Theme applied to site.' }
 }
@@ -112,7 +112,7 @@ export async function saveTheme(
 
   if (error) return { message: error.message, ok: false }
 
-  revalidateTag('site-theme')
+  revalidateTag('site-theme', 'max')
   revalidatePath('/', 'layout')
   return { message: 'Theme saved — site revalidated.', ok: true }
 }
@@ -128,7 +128,7 @@ export async function resetTheme(_prev: ThemeState, _formData: FormData): Promis
 
   if (error) return { message: error.message, ok: false }
 
-  revalidateTag('site-theme')
+  revalidateTag('site-theme', 'max')
   revalidatePath('/', 'layout')
   return { message: 'Theme reset to defaults.', ok: true }
 }

@@ -1,10 +1,11 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { FormField } from '@/components/admin/FormField'
 import { LocalizedInput } from '@/components/admin/LocalizedInput'
 import { SaveBar } from '@/components/admin/SaveBar'
+import { PinLocationPicker } from '@/components/admin/PinLocationPicker'
 import { createPin, updatePin, deletePin, type PinState } from './actions'
 import type { Tables } from '@/db/types'
 
@@ -20,12 +21,22 @@ const initial: PinState = { message: '', ok: false }
 const inputClass =
   'w-full rounded border border-line bg-ink px-3 py-2 text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none'
 
-const CATEGORIES = ['Camp', 'Border', 'Fuel', 'Water', 'Scenic', 'Mechanic', 'Other']
+const CATEGORIES = ['Camp', 'Border', 'Fuel', 'Water', 'Scenic', 'Mechanic', 'Restaurant', 'Find', 'Other']
 
 export function PinEditor({ pin }: { pin?: Pin }) {
   const saveAction = pin ? updatePin.bind(null, pin.id) : createPin
   const [state, formAction, pending] = useActionState(saveAction, initial)
   const deleteAction = pin ? deletePin.bind(null, pin.id) : null
+
+  const [lat, setLat] = useState<number | null>(pin?.lat ?? null)
+  const [lng, setLng] = useState<number | null>(pin?.lng ?? null)
+  const [country, setCountry] = useState<string>(pin?.country ?? '')
+
+  function handleLocationChange(newLat: number, newLng: number, newCountry: string | null) {
+    setLat(newLat)
+    setLng(newLng)
+    if (newCountry) setCountry(newCountry)
+  }
 
   return (
     <div className="max-w-2xl">
@@ -50,8 +61,12 @@ export function PinEditor({ pin }: { pin?: Pin }) {
         )}
       </div>
 
-      <form action={formAction} className="space-y-5">
-        <FormField label="Label" hint="Shown in popover and on admin list">
+      <form action={formAction} className="space-y-6">
+        {/* Hidden lat/lng submitted with form */}
+        <input type="hidden" name="lat" value={lat ?? ''} />
+        <input type="hidden" name="lng" value={lng ?? ''} />
+
+        <FormField label="Label" hint="Shown in the map popover">
           <input
             type="text"
             name="label"
@@ -62,38 +77,26 @@ export function PinEditor({ pin }: { pin?: Pin }) {
           />
         </FormField>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField label="Latitude" hint="e.g. -17.4823">
-            <input
-              type="number"
-              name="lat"
-              step="any"
-              defaultValue={pin?.lat ?? ''}
-              placeholder="-17.4823"
-              required
-              className={inputClass}
-            />
-          </FormField>
-          <FormField label="Longitude" hint="e.g. 13.2614">
-            <input
-              type="number"
-              name="lng"
-              step="any"
-              defaultValue={pin?.lng ?? ''}
-              placeholder="13.2614"
-              required
-              className={inputClass}
-            />
-          </FormField>
+        {/* Map location picker */}
+        <div>
+          <p className="mb-2 text-xs font-700 uppercase tracking-widest text-khaki-deep">
+            Location
+          </p>
+          <PinLocationPicker
+            initialLat={pin?.lat}
+            initialLng={pin?.lng}
+            onLocationChange={handleLocationChange}
+          />
+          {!lat && (
+            <p className="mt-2 text-xs text-red-400/80">
+              A location is required — search or click the map above.
+            </p>
+          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField label="Category">
-            <select
-              name="category"
-              defaultValue={pin?.category ?? ''}
-              className={inputClass}
-            >
+            <select name="category" defaultValue={pin?.category ?? ''} className={inputClass}>
               <option value="">— None —</option>
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -102,11 +105,12 @@ export function PinEditor({ pin }: { pin?: Pin }) {
               ))}
             </select>
           </FormField>
-          <FormField label="Country">
+          <FormField label="Country" hint="Auto-filled from map">
             <input
               type="text"
               name="country"
-              defaultValue={pin?.country ?? ''}
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
               placeholder="Namibia"
               className={inputClass}
             />

@@ -1,23 +1,46 @@
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/server'
+import type { MapPin } from '@/lib/maps/google'
 
 export const metadata = { title: 'Map Pins | Base Camp' }
+
+const AdminPinsMap = dynamic(
+  () => import('@/components/admin/AdminPinsMap').then((m) => m.AdminPinsMap),
+  { ssr: false, loading: () => (
+    <div className="flex items-center justify-center rounded-lg border border-line bg-ink" style={{ height: 320 }}>
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-accent" />
+    </div>
+  )},
+)
 
 export default async function PinsAdminPage() {
   const supabase = await createClient()
   const { data: pins } = await supabase
     .from('map_pins')
-    .select('id, label, lat, lng, category, country')
+    .select('id, label, lat, lng, category, country, note, related_post_id')
     .order('created_at', { ascending: false })
+
+  const mapPins: MapPin[] = (pins ?? []).map((p) => ({
+    id: p.id,
+    label: p.label,
+    lat: p.lat,
+    lng: p.lng,
+    category: p.category,
+    country: p.country,
+    note: p.note ? String((p.note as Record<string, unknown>)['en'] ?? '') : null,
+    related_post_id: p.related_post_id,
+  }))
 
   return (
     <div>
-      <div className="mb-8 flex items-end justify-between">
+      <div className="mb-6 flex items-end justify-between">
         <div>
           <p className="mb-1 text-xs font-700 uppercase tracking-widest text-accent">Base Camp</p>
           <h1 className="font-display text-2xl font-800 uppercase tracking-tight text-bone">
             Map Pins
           </h1>
+          <p className="mt-0.5 text-xs text-khaki-deep">{mapPins.length} pin{mapPins.length !== 1 ? 's' : ''} across Africa</p>
         </div>
         <Link
           href="/admin/pins/new"
@@ -26,6 +49,13 @@ export default async function PinsAdminPage() {
           + Drop a Pin
         </Link>
       </div>
+
+      {/* Overview map */}
+      {mapPins.length > 0 && (
+        <div className="mb-6">
+          <AdminPinsMap pins={mapPins} />
+        </div>
+      )}
 
       {pins && pins.length > 0 ? (
         <div className="overflow-hidden rounded-lg border border-line">
