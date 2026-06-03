@@ -43,23 +43,25 @@ export async function saveHero(
     return { message: result.error.issues[0].message, ok: false }
   }
 
-  const { error } = await supabase.from('site_settings').upsert({
-    id: true,
-    hero_line1: {
-      en: raw.hero_line1_en,
-      ...(raw.hero_line1_de ? { de: raw.hero_line1_de } : {}),
-    },
-    hero_line2: {
-      en: raw.hero_line2_en ?? '',
-      ...(raw.hero_line2_de ? { de: raw.hero_line2_de } : {}),
-    },
-    hero_subtitle: {
-      en: raw.hero_subtitle_en ?? '',
-      ...(raw.hero_subtitle_de ? { de: raw.hero_subtitle_de } : {}),
-    },
-    hero_location: raw.hero_location ?? null,
-    hero_coords: raw.hero_coords ?? null,
-  })
+  const { error } = await supabase
+    .from('site_settings')
+    .update({
+      hero_line1: {
+        en: raw.hero_line1_en,
+        ...(raw.hero_line1_de ? { de: raw.hero_line1_de } : {}),
+      },
+      hero_line2: {
+        en: raw.hero_line2_en ?? '',
+        ...(raw.hero_line2_de ? { de: raw.hero_line2_de } : {}),
+      },
+      hero_subtitle: {
+        en: raw.hero_subtitle_en ?? '',
+        ...(raw.hero_subtitle_de ? { de: raw.hero_subtitle_de } : {}),
+      },
+      hero_location: raw.hero_location ?? null,
+      hero_coords: raw.hero_coords ?? null,
+    })
+    .eq('id', true)
 
   if (error) return { message: error.message, ok: false }
 

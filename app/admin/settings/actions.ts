@@ -33,11 +33,10 @@ export async function saveSettings(
     tiktok: (formData.get('tiktok') as string) || null,
   }
 
-  const { error } = await supabase.from('site_settings').upsert({
-    id: true,
-    stats,
-    socials,
-  })
+  const { error } = await supabase
+    .from('site_settings')
+    .update({ stats, socials })
+    .eq('id', true)
 
   if (error) return { message: error.message, ok: false }
 

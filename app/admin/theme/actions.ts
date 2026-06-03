@@ -27,10 +27,10 @@ export async function saveTheme(
     }
   }
 
-  const { error } = await supabase.from('site_settings').upsert({
-    id: true,
-    theme,
-  })
+  const { error } = await supabase
+    .from('site_settings')
+    .update({ theme })
+    .eq('id', true)
 
   if (error) return { message: error.message, ok: false }
 
@@ -47,10 +47,10 @@ export async function resetTheme(_prev: ThemeState, _formData: FormData): Promis
   } = await supabase.auth.getUser()
   if (!user) return { message: 'Unauthorized', ok: false }
 
-  const { error } = await supabase.from('site_settings').upsert({
-    id: true,
-    theme: {},
-  })
+  const { error } = await supabase
+    .from('site_settings')
+    .update({ theme: {} })
+    .eq('id', true)
 
   if (error) return { message: error.message, ok: false }
 
