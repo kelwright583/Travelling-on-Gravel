@@ -545,6 +545,7 @@ export type Database = {
           socials: Json
           stats: Json
           theme: Json
+          theme_presets: Json | null
           updated_at: string | null
         }
         Insert: {
@@ -560,6 +561,7 @@ export type Database = {
           socials?: Json
           stats?: Json
           theme?: Json
+          theme_presets?: Json | null
           updated_at?: string | null
         }
         Update: {
@@ -575,6 +577,7 @@ export type Database = {
           socials?: Json
           stats?: Json
           theme?: Json
+          theme_presets?: Json | null
           updated_at?: string | null
         }
         Relationships: []
