@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { GravelMap } from '@/components/public/GravelMap'
 import type { MapPin } from '@/lib/maps/google'
 
-export const revalidate = 3600
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'The Gravel Map',

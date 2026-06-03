@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { t } from '@/lib/i18n/types'
 
-export const revalidate = 3600
+export const revalidate = 60
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>

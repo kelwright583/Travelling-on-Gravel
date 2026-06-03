@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { IngredientGroup, Step } from '@/lib/recipes/types'
 import { RecipeDetail } from './RecipeDetail'
 
-export const revalidate = 3600
+export const revalidate = 60
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 

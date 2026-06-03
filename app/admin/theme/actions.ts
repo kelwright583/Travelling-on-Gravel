@@ -56,7 +56,7 @@ export async function savePreset(name: string, overrides: ThemeOverrides): Promi
 
   const { error } = await supabase
     .from('site_settings')
-    .update({ theme_presets: [...existing, newPreset] })
+    .update({ theme_presets: JSON.parse(JSON.stringify([...existing, newPreset])) })
     .eq('id', true)
 
   if (error) return { ok: false, message: error.message }
@@ -78,7 +78,7 @@ export async function deletePreset(id: string): Promise<ThemeActionResult> {
 
   const { error } = await supabase
     .from('site_settings')
-    .update({ theme_presets: updated })
+    .update({ theme_presets: JSON.parse(JSON.stringify(updated)) })
     .eq('id', true)
 
   if (error) return { ok: false, message: error.message }

@@ -11,7 +11,7 @@ import { MapPlaceholder } from '@/components/public/MapPlaceholder'
 import { NewsletterForm } from '@/components/public/NewsletterForm'
 
 // ISR — revalidate every hour; on-demand revalidation triggered by admin saves
-export const revalidate = 3600
+export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = await createClient()
