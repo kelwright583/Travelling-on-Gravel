@@ -3,8 +3,9 @@
 import { useState, useCallback, useTransition } from 'react'
 import Link from 'next/link'
 import { FormField } from '@/components/admin/FormField'
-import { MediaPicker } from '@/components/admin/MediaPicker'
+import { PostCoverPicker } from '@/components/admin/PostCoverPicker'
 import { AiButton } from '@/components/admin/AiButton'
+import { WritingAssistant } from '@/components/admin/WritingAssistant'
 import {
   createRecipe,
   updateRecipe,
@@ -539,11 +540,8 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
 
     return {
       title_en: get('title_en') || titleEn,
-      title_de: get('title_de') || undefined,
       subtitle_en: get('subtitle_en') || undefined,
-      subtitle_de: get('subtitle_de') || undefined,
       intro_en: get('intro_en') || undefined,
-      intro_de: get('intro_de') || undefined,
       slug: get('slug') || slug,
       cover_image: (get('cover_image') || recipe?.cover_image) ?? null,
       prep_minutes: get('prep_minutes') ? Number(get('prep_minutes')) : null,
@@ -593,7 +591,7 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
         <section>
           <SectionHeading>The Dish</SectionHeading>
           <div className="space-y-4">
-            <FormField label="Title (EN)" hint="The dish name">
+            <FormField label="Title" hint="The dish name">
               <input
                 type="text"
                 name="title_en"
@@ -607,7 +605,7 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
                 className="w-full rounded border border-line bg-ink px-3 py-2 text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
               />
             </FormField>
-            <TextInput label="Subtitle (EN)" name="subtitle_en" defaultValue={locStr(recipe?.subtitle)} placeholder="Short tagline — the hook" />
+            <TextInput label="Subtitle" name="subtitle_en" defaultValue={locStr(recipe?.subtitle)} placeholder="Short tagline — the hook" />
             <FormField label="Slug" hint="Auto-filled. URL-safe, lowercase, hyphens.">
               <input
                 type="text"
@@ -619,14 +617,24 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
                 className="w-full rounded border border-line bg-ink px-3 py-2 font-mono text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
               />
             </FormField>
-            <MediaPicker name="cover_image" defaultValue={recipe?.cover_image} label="Cover Image" />
-            <TextareaInput
-              label="Intro / Story (EN)"
-              name="intro_en"
-              defaultValue={locStr(recipe?.intro)}
-              placeholder="The story behind the dish — where you made it, why it matters. Markdown OK."
-              rows={6}
-            />
+            <PostCoverPicker name="cover_image" defaultValue={recipe?.cover_image} label="Cover Photo" />
+            <div className="space-y-2">
+              <TextareaInput
+                label="Intro / Story"
+                name="intro_en"
+                defaultValue={locStr(recipe?.intro)}
+                placeholder="The story behind the dish — where you made it, why it matters. Markdown OK."
+                rows={6}
+              />
+              <WritingAssistant
+                getText={() => (document.querySelector<HTMLTextAreaElement>('[name="intro_en"]')?.value ?? '')}
+                onApply={(text) => {
+                  const el = document.querySelector<HTMLTextAreaElement>('[name="intro_en"]')
+                  if (el) el.value = text
+                }}
+                fieldLabel="the intro"
+              />
+            </div>
           </div>
         </section>
 

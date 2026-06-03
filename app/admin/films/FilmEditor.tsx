@@ -99,7 +99,6 @@ export function FilmEditor({ film }: { film?: Film }) {
           nameEn="title_en"
           nameDe="title_de"
           defaultEn={locStr(film?.title)}
-          defaultDe={locStr(film?.title, 'de')}
           placeholder="Film title"
           required
         />
@@ -109,7 +108,6 @@ export function FilmEditor({ film }: { film?: Film }) {
           nameEn="description_en"
           nameDe="description_de"
           defaultEn={locStr(film?.description)}
-          defaultDe={locStr(film?.description, 'de')}
           placeholder="Short description shown in the grid…"
           multiline
           rows={3}

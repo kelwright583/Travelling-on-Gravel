@@ -8,7 +8,7 @@ export default async function AdventuresAdminPage() {
   const supabase = await createClient()
   const { data: adventures } = await supabase
     .from('adventures')
-    .select('id, title, slug, country, published, sort_order')
+    .select('id, title, slug, country, published, sort_order, status, start_date, end_date')
     .order('sort_order', { ascending: true })
 
   return (
@@ -33,46 +33,50 @@ export default async function AdventuresAdminPage() {
           <table className="w-full text-sm">
             <thead className="border-b border-line bg-ink-soft">
               <tr>
-                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">
-                  Title
-                </th>
-                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">
-                  Country
-                </th>
-                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">
-                  Order
-                </th>
-                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">
-                  Status
-                </th>
+                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Title</th>
+                <th className="hidden px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep sm:table-cell">Country</th>
+                <th className="hidden px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep md:table-cell">Dates</th>
+                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Trip status</th>
+                <th className="px-4 py-3 text-left text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Published</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {adventures.map((adv) => (
-                <tr key={adv.id} className="group hover:bg-ink-soft transition-colors">
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/admin/adventures/${adv.id}`}
-                      className="font-600 text-bone group-hover:text-accent transition-colors"
-                    >
-                      {t(adv.title, 'en') || '(untitled)'}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 text-xs text-khaki-deep">{adv.country ?? '—'}</td>
-                  <td className="px-4 py-3 text-xs text-khaki-deep">{adv.sort_order ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-block rounded px-2 py-0.5 text-[10px] font-700 uppercase tracking-widest ${
-                        adv.published
-                          ? 'bg-olive/30 text-accent'
-                          : 'bg-ink-soft text-khaki-deep'
-                      }`}
-                    >
-                      {adv.published ? 'Published' : 'Draft'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {adventures.map((adv) => {
+                const tripStatus = (adv as { status?: string }).status ?? 'planning'
+                const statusMeta: Record<string, { label: string; cls: string }> = {
+                  planning: { label: 'Planning', cls: 'bg-ink-soft text-khaki-deep' },
+                  active: { label: 'On the road', cls: 'bg-yellow-400/10 text-yellow-400' },
+                  completed: { label: 'Completed', cls: 'bg-olive/30 text-accent' },
+                }
+                const sm = statusMeta[tripStatus] ?? statusMeta.planning
+                const startDate = (adv as { start_date?: string }).start_date
+                const endDate = (adv as { end_date?: string }).end_date
+                return (
+                  <tr key={adv.id} className="group transition-colors hover:bg-ink-soft">
+                    <td className="px-4 py-3">
+                      <Link href={`/admin/adventures/${adv.id}`} className="font-600 text-bone transition-colors group-hover:text-accent">
+                        {t(adv.title, 'en') || '(untitled)'}
+                      </Link>
+                    </td>
+                    <td className="hidden px-4 py-3 text-xs text-khaki-deep sm:table-cell">{adv.country ?? '—'}</td>
+                    <td className="hidden px-4 py-3 text-xs text-khaki-deep md:table-cell">
+                      {startDate ? new Date(startDate).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                      {startDate && endDate && ' → '}
+                      {endDate ? new Date(endDate).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' }) : ''}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-block rounded px-2 py-0.5 text-[10px] font-700 uppercase tracking-widest ${sm.cls}`}>
+                        {sm.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-block rounded px-2 py-0.5 text-[10px] font-700 uppercase tracking-widest ${adv.published ? 'bg-olive/30 text-accent' : 'bg-ink-soft text-khaki-deep'}`}>
+                        {adv.published ? 'Live' : 'Draft'}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

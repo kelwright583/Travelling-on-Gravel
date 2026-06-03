@@ -6,8 +6,7 @@ import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 
 const schema = z.object({
-  title_en: z.string().min(1, 'Title (EN) is required'),
-  title_de: z.string().optional(),
+  title_en: z.string().min(1, 'Title is required'),
   slug: z
     .string()
     .min(1, 'Slug is required')
@@ -18,13 +17,16 @@ const schema = z.object({
   lng: z.string().optional(),
   tag: z.string().optional(),
   excerpt_en: z.string().optional(),
-  excerpt_de: z.string().optional(),
   body_en: z.string().optional(),
-  body_de: z.string().optional(),
   sort_order: z.string().optional(),
   published: z.string().optional(),
   published_at: z.string().optional(),
   cover_image: z.string().optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  status: z.string().optional(),
+  vehicle: z.string().optional(),
+  total_distance_km: z.string().optional(),
 })
 
 export type AdventureState = { message: string; ok: boolean }
@@ -39,30 +41,30 @@ async function getAuthUser() {
 
 function buildPayload(raw: z.infer<typeof schema>) {
   return {
-    title: { en: raw.title_en, ...(raw.title_de ? { de: raw.title_de } : {}) },
+    title: { en: raw.title_en },
     slug: raw.slug,
     country: raw.country || null,
     location: raw.location || null,
     lat: raw.lat ? parseFloat(raw.lat) : null,
     lng: raw.lng ? parseFloat(raw.lng) : null,
     tag: raw.tag || null,
-    excerpt: raw.excerpt_en
-      ? { en: raw.excerpt_en, ...(raw.excerpt_de ? { de: raw.excerpt_de } : {}) }
-      : null,
-    body: raw.body_en
-      ? { en: raw.body_en, ...(raw.body_de ? { de: raw.body_de } : {}) }
-      : null,
+    excerpt: raw.excerpt_en ? { en: raw.excerpt_en } : null,
+    body: raw.body_en ? { en: raw.body_en } : null,
     sort_order: raw.sort_order ? parseInt(raw.sort_order, 10) : null,
     published: raw.published === 'on',
     published_at: raw.published_at || null,
     cover_image: raw.cover_image || null,
+    start_date: raw.start_date || null,
+    end_date: raw.end_date || null,
+    status: raw.status || 'planning',
+    vehicle: raw.vehicle || null,
+    total_distance_km: raw.total_distance_km ? parseInt(raw.total_distance_km, 10) : null,
   }
 }
 
 function extractRaw(formData: FormData) {
   return {
     title_en: formData.get('title_en') as string,
-    title_de: (formData.get('title_de') as string) || undefined,
     slug: formData.get('slug') as string,
     country: (formData.get('country') as string) || undefined,
     location: (formData.get('location') as string) || undefined,
@@ -70,13 +72,16 @@ function extractRaw(formData: FormData) {
     lng: (formData.get('lng') as string) || undefined,
     tag: (formData.get('tag') as string) || undefined,
     excerpt_en: (formData.get('excerpt_en') as string) || undefined,
-    excerpt_de: (formData.get('excerpt_de') as string) || undefined,
     body_en: (formData.get('body_en') as string) || undefined,
-    body_de: (formData.get('body_de') as string) || undefined,
     sort_order: (formData.get('sort_order') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
     published_at: (formData.get('published_at') as string) || undefined,
     cover_image: (formData.get('cover_image') as string) || undefined,
+    start_date: (formData.get('start_date') as string) || undefined,
+    end_date: (formData.get('end_date') as string) || undefined,
+    status: (formData.get('status') as string) || undefined,
+    vehicle: (formData.get('vehicle') as string) || undefined,
+    total_distance_km: (formData.get('total_distance_km') as string) || undefined,
   }
 }
 

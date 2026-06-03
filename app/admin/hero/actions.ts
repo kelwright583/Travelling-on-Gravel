@@ -13,6 +13,7 @@ const schema = z.object({
   hero_subtitle_de: z.string().optional(),
   hero_location: z.string().optional(),
   hero_coords: z.string().optional(),
+  hero_image: z.string().optional(),
 })
 
 export type HeroState = { message: string; ok: boolean }
@@ -36,6 +37,7 @@ export async function saveHero(
     hero_subtitle_de: (formData.get('hero_subtitle_de') as string) || undefined,
     hero_location: (formData.get('hero_location') as string) || undefined,
     hero_coords: (formData.get('hero_coords') as string) || undefined,
+    hero_image: (formData.get('hero_image') as string) || undefined,
   }
 
   const result = schema.safeParse(raw)
@@ -60,6 +62,7 @@ export async function saveHero(
       },
       hero_location: raw.hero_location ?? null,
       hero_coords: raw.hero_coords ?? null,
+      ...(raw.hero_image !== undefined ? { hero_image: raw.hero_image || null } : {}),
     })
     .eq('id', true)
 

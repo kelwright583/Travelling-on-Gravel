@@ -15,11 +15,9 @@ function parseYouTubeId(url: string): string | null {
 }
 
 const schema = z.object({
-  title_en: z.string().min(1, 'Title (EN) is required'),
-  title_de: z.string().optional(),
+  title_en: z.string().min(1, 'Title is required'),
   youtube_url: z.string().url('Must be a valid YouTube URL'),
   description_en: z.string().optional(),
-  description_de: z.string().optional(),
   duration: z.string().optional(),
   sort_order: z.string().optional(),
   published: z.string().optional(),
@@ -38,10 +36,8 @@ async function getAuthUser() {
 function extractRaw(formData: FormData) {
   return {
     title_en: formData.get('title_en') as string,
-    title_de: (formData.get('title_de') as string) || undefined,
     youtube_url: formData.get('youtube_url') as string,
     description_en: (formData.get('description_en') as string) || undefined,
-    description_de: (formData.get('description_de') as string) || undefined,
     duration: (formData.get('duration') as string) || undefined,
     sort_order: (formData.get('sort_order') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
@@ -51,15 +47,10 @@ function extractRaw(formData: FormData) {
 function buildPayload(raw: z.infer<typeof schema>) {
   const youtubeId = parseYouTubeId(raw.youtube_url) ?? ''
   return {
-    title: { en: raw.title_en, ...(raw.title_de ? { de: raw.title_de } : {}) },
+    title: { en: raw.title_en },
     youtube_url: raw.youtube_url,
     youtube_id: youtubeId,
-    description: raw.description_en
-      ? {
-          en: raw.description_en,
-          ...(raw.description_de ? { de: raw.description_de } : {}),
-        }
-      : null,
+    description: raw.description_en ? { en: raw.description_en } : null,
     duration: raw.duration || null,
     sort_order: raw.sort_order ? parseInt(raw.sort_order, 10) : null,
     published: raw.published === 'on',

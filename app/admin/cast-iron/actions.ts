@@ -18,11 +18,8 @@ async function getAuthUser() {
 
 export interface RecipePayload {
   title_en: string
-  title_de?: string
   subtitle_en?: string
-  subtitle_de?: string
   intro_en?: string
-  intro_de?: string
   slug: string
   cover_image?: string | null
   prep_minutes?: number | null
@@ -32,8 +29,8 @@ export interface RecipePayload {
   cook_method: string
   ingredients: IngredientGroup[]
   steps: Step[]
-  tips: { en: string; de?: string }[]
-  equipment: { en: string; de?: string }[]
+  tips: { en: string }[]
+  equipment: { en: string }[]
   tags: string[]
   published: boolean
   published_at?: string | null
@@ -41,13 +38,9 @@ export interface RecipePayload {
 
 function buildPayload(data: RecipePayload) {
   return {
-    title: { en: data.title_en, ...(data.title_de ? { de: data.title_de } : {}) },
-    subtitle: data.subtitle_en
-      ? { en: data.subtitle_en, ...(data.subtitle_de ? { de: data.subtitle_de } : {}) }
-      : {},
-    intro: data.intro_en
-      ? { en: data.intro_en, ...(data.intro_de ? { de: data.intro_de } : {}) }
-      : {},
+    title: { en: data.title_en },
+    subtitle: data.subtitle_en ? { en: data.subtitle_en } : {},
+    intro: data.intro_en ? { en: data.intro_en } : {},
     slug: data.slug,
     cover_image: data.cover_image ?? null,
     prep_minutes: data.prep_minutes ?? null,

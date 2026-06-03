@@ -7,6 +7,7 @@ import { FormField } from '@/components/admin/FormField'
 import { SaveBar } from '@/components/admin/SaveBar'
 import { MediaPicker } from '@/components/admin/MediaPicker'
 import { AiButton } from '@/components/admin/AiButton'
+import { WritingAssistant } from '@/components/admin/WritingAssistant'
 import { createPost, updatePost, deletePost, type PostState } from './actions'
 import type { Tables } from '@/db/types'
 
@@ -72,7 +73,6 @@ export function PostEditor({ post }: { post?: Post }) {
           nameEn="title_en"
           nameDe="title_de"
           defaultEn={locStr(post?.title)}
-          defaultDe={locStr(post?.title, 'de')}
           placeholder="Dispatch title"
           required
         />
@@ -105,54 +105,39 @@ export function PostEditor({ post }: { post?: Post }) {
           label="Cover Image"
         />
 
-        {/* Excerpt with AI summarize assist */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <LocalizedInput
             label="Excerpt"
             nameEn="excerpt_en"
             nameDe="excerpt_de"
             defaultEn={locStr(post?.excerpt)}
-            defaultDe={locStr(post?.excerpt, 'de')}
             placeholder="Short teaser shown on the listing page…"
             multiline
             rows={3}
           />
-          <div className="flex gap-2">
-            <AiButton
-              endpoint="/api/ai/summarize"
-              payload={() => ({ content: getFieldValue('body_en'), locale: 'en' })}
-              onResult={(r) => setFieldValue('excerpt_en', (r.excerpt as string) ?? '')}
-              label="Summarize → EN excerpt"
-            />
-          </div>
+          <AiButton
+            endpoint="/api/ai/summarize"
+            payload={() => ({ content: getFieldValue('body_en'), locale: 'en' })}
+            onResult={(r) => setFieldValue('excerpt_en', (r.excerpt as string) ?? '')}
+            label="Auto-summarise from body"
+          />
         </div>
 
-        {/* Body with AI translate assist */}
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <LocalizedInput
             label="Body (Markdown)"
             nameEn="body_en"
             nameDe="body_de"
             defaultEn={locStr(post?.body)}
-            defaultDe={locStr(post?.body, 'de')}
             placeholder="Full post content in Markdown…"
             multiline
             rows={16}
           />
-          <div className="flex flex-wrap gap-2">
-            <AiButton
-              endpoint="/api/ai/translate"
-              payload={() => ({ text: getFieldValue('body_en'), from: 'en', to: 'de' })}
-              onResult={(r) => setFieldValue('body_de', (r.translation as string) ?? '')}
-              label="Translate body EN → DE"
-            />
-            <AiButton
-              endpoint="/api/ai/summarize"
-              payload={() => ({ content: getFieldValue('body_de') || getFieldValue('body_en'), locale: 'de' })}
-              onResult={(r) => setFieldValue('excerpt_de', (r.excerpt as string) ?? '')}
-              label="Summarize → DE excerpt"
-            />
-          </div>
+          <WritingAssistant
+            getText={() => getFieldValue('body_en')}
+            onApply={(text) => setFieldValue('body_en', text)}
+            fieldLabel="the body"
+          />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

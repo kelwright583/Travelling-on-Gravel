@@ -118,7 +118,6 @@ export function PinEditor({ pin }: { pin?: Pin }) {
           nameEn="note_en"
           nameDe="note_de"
           defaultEn={noteStr(pin?.note)}
-          defaultDe={noteStr(pin?.note, 'de')}
           placeholder="Short description shown in the map popover…"
           multiline
           rows={3}

@@ -12,7 +12,6 @@ const schema = z.object({
   category: z.string().optional(),
   country: z.string().optional(),
   note_en: z.string().optional(),
-  note_de: z.string().optional(),
   related_post_id: z.string().optional(),
 })
 
@@ -34,7 +33,6 @@ function extractRaw(formData: FormData) {
     category: (formData.get('category') as string) || undefined,
     country: (formData.get('country') as string) || undefined,
     note_en: (formData.get('note_en') as string) || undefined,
-    note_de: (formData.get('note_de') as string) || undefined,
     related_post_id: (formData.get('related_post_id') as string) || undefined,
   }
 }
@@ -46,9 +44,7 @@ function buildPayload(data: z.infer<typeof schema>) {
     lng: parseFloat(data.lng),
     category: data.category || null,
     country: data.country || null,
-    note: data.note_en
-      ? { en: data.note_en, ...(data.note_de ? { de: data.note_de } : {}) }
-      : null,
+    note: data.note_en ? { en: data.note_en } : null,
     related_post_id: data.related_post_id || null,
   }
 }

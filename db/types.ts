@@ -14,12 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
+      adventure_entries: {
+        Row: {
+          adventure_id: string
+          body: string | null
+          created_at: string
+          data: Json
+          id: string
+          images: string[]
+          lat: number | null
+          lng: number | null
+          location_name: string | null
+          occurred_at: string
+          rating: number | null
+          tags: string[]
+          title: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          adventure_id: string
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          images?: string[]
+          lat?: number | null
+          lng?: number | null
+          location_name?: string | null
+          occurred_at?: string
+          rating?: number | null
+          tags?: string[]
+          title?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          adventure_id?: string
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          images?: string[]
+          lat?: number | null
+          lng?: number | null
+          location_name?: string | null
+          occurred_at?: string
+          rating?: number | null
+          tags?: string[]
+          title?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adventure_entries_adventure_id_fkey"
+            columns: ["adventure_id"]
+            isOneToOne: false
+            referencedRelation: "adventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      adventure_itinerary: {
+        Row: {
+          actual_entry_id: string | null
+          adventure_id: string
+          created_at: string
+          day_number: number | null
+          description: string | null
+          id: string
+          lat: number | null
+          lng: number | null
+          location_name: string | null
+          planned_date: string | null
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          actual_entry_id?: string | null
+          adventure_id: string
+          created_at?: string
+          day_number?: number | null
+          description?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          location_name?: string | null
+          planned_date?: string | null
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          actual_entry_id?: string | null
+          adventure_id?: string
+          created_at?: string
+          day_number?: number | null
+          description?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          location_name?: string | null
+          planned_date?: string | null
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adventure_itinerary_adventure_id_fkey"
+            columns: ["adventure_id"]
+            isOneToOne: false
+            referencedRelation: "adventures"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       adventures: {
         Row: {
           body: Json | null
           country: string | null
           cover_image: string | null
           created_at: string | null
+          end_date: string | null
           excerpt: Json | null
           gallery: string[] | null
           id: string
@@ -30,15 +146,20 @@ export type Database = {
           published_at: string | null
           slug: string
           sort_order: number | null
+          start_date: string | null
+          status: string | null
           tag: string | null
           title: Json
+          total_distance_km: number | null
           updated_at: string | null
+          vehicle: string | null
         }
         Insert: {
           body?: Json | null
           country?: string | null
           cover_image?: string | null
           created_at?: string | null
+          end_date?: string | null
           excerpt?: Json | null
           gallery?: string[] | null
           id?: string
@@ -49,15 +170,20 @@ export type Database = {
           published_at?: string | null
           slug: string
           sort_order?: number | null
+          start_date?: string | null
+          status?: string | null
           tag?: string | null
           title: Json
+          total_distance_km?: number | null
           updated_at?: string | null
+          vehicle?: string | null
         }
         Update: {
           body?: Json | null
           country?: string | null
           cover_image?: string | null
           created_at?: string | null
+          end_date?: string | null
           excerpt?: Json | null
           gallery?: string[] | null
           id?: string
@@ -68,9 +194,13 @@ export type Database = {
           published_at?: string | null
           slug?: string
           sort_order?: number | null
+          start_date?: string | null
+          status?: string | null
           tag?: string | null
           title?: Json
+          total_distance_km?: number | null
           updated_at?: string | null
+          vehicle?: string | null
         }
         Relationships: []
       }
@@ -234,6 +364,7 @@ export type Database = {
           published: boolean | null
           published_at: string | null
           slug: string
+          tags: string[]
           title: Json
           updated_at: string | null
         }
@@ -248,6 +379,7 @@ export type Database = {
           published?: boolean | null
           published_at?: string | null
           slug: string
+          tags?: string[]
           title: Json
           updated_at?: string | null
         }
@@ -262,6 +394,7 @@ export type Database = {
           published?: boolean | null
           published_at?: string | null
           slug?: string
+          tags?: string[]
           title?: Json
           updated_at?: string | null
         }

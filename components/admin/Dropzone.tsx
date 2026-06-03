@@ -8,6 +8,10 @@ import { cn } from '@/lib/utils'
 
 interface DropzoneProps {
   onUploaded?: (storagePath: string, assetId: string) => void
+  /** Extra hint line shown inside the drop target */
+  hint?: string
+  /** Show a resolution warning if the image is below these dimensions */
+  warnBelow?: { width: number; height: number }
 }
 
 interface FileUploadState {
@@ -17,6 +21,7 @@ interface FileUploadState {
   progress: number
   error?: string
   storagePath?: string
+  resWarn?: string
 }
 
 async function compressImage(file: File): Promise<File> {
@@ -63,7 +68,7 @@ function getImageDimensions(
   })
 }
 
-export function Dropzone({ onUploaded }: DropzoneProps) {
+export function Dropzone({ onUploaded, hint, warnBelow }: DropzoneProps) {
   const [uploads, setUploads] = useState<FileUploadState[]>([])
   const [dragging, setDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -89,6 +94,16 @@ export function Dropzone({ onUploaded }: DropzoneProps) {
           )
 
         try {
+          // 0. Resolution check (pre-compression, on the original file)
+          if (warnBelow) {
+            const origDims = await getImageDimensions(upload.file)
+            if (origDims && (origDims.width < warnBelow.width || origDims.height < warnBelow.height)) {
+              updateUpload({
+                resWarn: `Low resolution: ${origDims.width} × ${origDims.height}px — recommended minimum is ${warnBelow.width} × ${warnBelow.height}px.`,
+              })
+            }
+          }
+
           // 1. Compress
           const compressed = await compressImage(upload.file)
           updateUpload({ status: 'uploading', progress: 20 })
@@ -172,6 +187,7 @@ export function Dropzone({ onUploaded }: DropzoneProps) {
         <div>
           <p className="text-sm font-600">Drop images here or click to browse</p>
           <p className="mt-1 text-xs">JPG, PNG, WEBP · Max 5 MB · Auto-compressed to 2500px / 1.5 MB</p>
+          {hint && <p className="mt-1 text-xs text-accent/80">{hint}</p>}
         </div>
       </button>
 
@@ -188,30 +204,35 @@ export function Dropzone({ onUploaded }: DropzoneProps) {
       {uploads.length > 0 && (
         <ul className="space-y-2">
           {uploads.map((u) => (
-            <li
-              key={u.id}
-              className="flex items-center gap-3 rounded border border-line bg-ink-soft px-4 py-3 text-sm"
-            >
-              <span className="flex-1 truncate text-bone">{u.file.name}</span>
-              {u.status === 'compressing' && (
-                <span className="flex items-center gap-1.5 text-xs text-khaki-deep">
-                  <Loader size={12} className="animate-spin" /> Compressing…
-                </span>
-              )}
-              {u.status === 'uploading' && (
-                <span className="flex items-center gap-1.5 text-xs text-khaki-deep">
-                  <Loader size={12} className="animate-spin" /> {u.progress}%
-                </span>
-              )}
-              {u.status === 'done' && (
-                <span className="flex items-center gap-1.5 text-xs text-green-400">
-                  <Check size={12} /> Done
-                </span>
-              )}
-              {u.status === 'error' && (
-                <span className="flex items-center gap-1.5 text-xs text-red-400">
-                  <X size={12} /> {u.error}
-                </span>
+            <li key={u.id} className="space-y-1">
+              <div className="flex items-center gap-3 rounded border border-line bg-ink-soft px-4 py-3 text-sm">
+                <span className="flex-1 truncate text-bone">{u.file.name}</span>
+                {u.status === 'compressing' && (
+                  <span className="flex items-center gap-1.5 text-xs text-khaki-deep">
+                    <Loader size={12} className="animate-spin" /> Compressing…
+                  </span>
+                )}
+                {u.status === 'uploading' && (
+                  <span className="flex items-center gap-1.5 text-xs text-khaki-deep">
+                    <Loader size={12} className="animate-spin" /> {u.progress}%
+                  </span>
+                )}
+                {u.status === 'done' && (
+                  <span className="flex items-center gap-1.5 text-xs text-green-400">
+                    <Check size={12} /> Done
+                  </span>
+                )}
+                {u.status === 'error' && (
+                  <span className="flex items-center gap-1.5 text-xs text-red-400">
+                    <X size={12} /> {u.error}
+                  </span>
+                )}
+              </div>
+              {u.resWarn && (
+                <p className="flex items-start gap-1.5 rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+                  <span className="mt-px shrink-0">⚠</span>
+                  {u.resWarn}
+                </p>
               )}
             </li>
           ))}
