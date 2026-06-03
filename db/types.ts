@@ -303,6 +303,101 @@ export type Database = {
         }
         Relationships: []
       }
+      recipes: {
+        Row: {
+          ai_notes: Json | null
+          ai_reviewed: boolean | null
+          author_id: string | null
+          cook_method: string | null
+          cook_minutes: number | null
+          cover_image: string | null
+          created_at: string | null
+          difficulty: string | null
+          equipment: Json | null
+          gallery: string[] | null
+          id: string
+          ingredients: Json
+          intro: Json | null
+          prep_minutes: number | null
+          published: boolean | null
+          published_at: string | null
+          servings: number | null
+          slug: string
+          sort_order: number | null
+          steps: Json
+          subtitle: Json | null
+          tags: string[] | null
+          tips: Json | null
+          title: Json
+          total_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_notes?: Json | null
+          ai_reviewed?: boolean | null
+          author_id?: string | null
+          cook_method?: string | null
+          cook_minutes?: number | null
+          cover_image?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          equipment?: Json | null
+          gallery?: string[] | null
+          id?: string
+          ingredients?: Json
+          intro?: Json | null
+          prep_minutes?: number | null
+          published?: boolean | null
+          published_at?: string | null
+          servings?: number | null
+          slug: string
+          sort_order?: number | null
+          steps?: Json
+          subtitle?: Json | null
+          tags?: string[] | null
+          tips?: Json | null
+          title: Json
+          total_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_notes?: Json | null
+          ai_reviewed?: boolean | null
+          author_id?: string | null
+          cook_method?: string | null
+          cook_minutes?: number | null
+          cover_image?: string | null
+          created_at?: string | null
+          difficulty?: string | null
+          equipment?: Json | null
+          gallery?: string[] | null
+          id?: string
+          ingredients?: Json
+          intro?: Json | null
+          prep_minutes?: number | null
+          published?: boolean | null
+          published_at?: string | null
+          servings?: number | null
+          slug?: string
+          sort_order?: number | null
+          steps?: Json
+          subtitle?: Json | null
+          tags?: string[] | null
+          tips?: Json | null
+          title?: Json
+          total_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_settings: {
         Row: {
           fonts: Json

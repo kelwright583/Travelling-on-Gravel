@@ -1,6 +1,7 @@
 {
   "nav": {
-    "dispatches": "Dispatches",
+    "fieldWork": "Field Work",
+    "castIron": "Cast Iron",
     "adventures": "Adventures",
     "films": "Films",
     "map": "Map",
@@ -9,12 +10,15 @@
   },
   "footer": {
     "tagline": "Less glamping. More gravel.",
-    "dispatches": "Dispatches",
+    "fieldWork": "Field Work",
+    "castIron": "Cast Iron",
     "adventures": "Adventures",
     "films": "Films",
     "map": "Map",
     "privacy": "Privacy",
-    "copyright": "Travelling on Gravel. All rights reserved."
+    "copyright": "Travelling on Gravel. All rights reserved.",
+    "newsletterTeaser": "No algorithms. No sponsored fluff. Just honest field notes.",
+    "newsletterLabel": "Subscribe"
   },
   "hero": {
     "scrollDown": "Scroll"
@@ -22,16 +26,41 @@
   "newsletter": {
     "placeholder": "your@email.com",
     "submit": "Subscribe",
-    "submitting": "Subscribing…",
+    "submitting": "Subscribing\u2026",
     "success": "Check your inbox for a confirmation link.",
     "errorGeneric": "Something went wrong. Please try again.",
     "errorEmail": "Invalid email address.",
-    "consent": "Double opt-in. Unsubscribe any time. Your data stays here."
+    "consent": "Double opt-in. Unsubscribe any time. Your data stays here.",
+    "eyebrow": "Own your audience",
+    "heading": "Field Notes\nto Your Inbox",
+    "body": "No algorithms. No sponsored fluff. Honest dispatches sent when there\u2019s something worth saying \u2014 not on a schedule because some marketing calendar said so."
   },
-  "dispatches": {
-    "title": "Dispatches",
+  "fieldWork": {
+    "title": "Field Work",
     "eyebrow": "From the field",
-    "empty": "No dispatches yet. Check back soon."
+    "empty": "No field notes yet. Check back soon.",
+    "allPosts": "All Field Notes \u2192"
+  },
+  "castIron": {
+    "title": "Cast Iron",
+    "eyebrow": "Cooking that needs a fire",
+    "tagline": "Cooking that needs a fire, not a microwave.",
+    "empty": "No recipes yet. Check back soon.",
+    "allRecipes": "All Recipes \u2192",
+    "prep": "Prep",
+    "cook": "Cook",
+    "total": "Total",
+    "servings": "Servings",
+    "ingredients": "Ingredients",
+    "method": "Method",
+    "tips": "Tips",
+    "equipment": "Equipment",
+    "minutes": "min",
+    "servingsLabel": "Adjust servings",
+    "difficultyEasy": "Easy",
+    "difficultyMedium": "Medium",
+    "difficultyHard": "Hard",
+    "noImage": "No photo yet"
   },
   "adventures": {
     "title": "Adventures",
@@ -46,8 +75,10 @@
     "title": "The Gravel Map",
     "eyebrow": "Overland Africa"
   },
-  "locale": {
-    "switchTo": "Deutsch",
-    "current": "EN"
+  "common": {
+    "published": "Published",
+    "draft": "Draft",
+    "readMore": "Read more",
+    "backToList": "Back"
   }
 }

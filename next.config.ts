@@ -14,6 +14,12 @@ const withSerwist = withSerwistInit({
 })
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: '/:locale/dispatches', destination: '/:locale/field-work', permanent: true },
+      { source: '/:locale/dispatches/:slug', destination: '/:locale/field-work/:slug', permanent: true },
+    ]
+  },
   images: {
     remotePatterns: [
       {

@@ -1,9 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
-import { Image, FileText, Film, MapPin, Users } from 'lucide-react'
+import { Image, FileText, Film, MapPin, Users, Flame } from 'lucide-react'
 import Link from 'next/link'
 
 const quickActions = [
-  { href: '/admin/dispatches/new', label: 'New Dispatch' },
+  { href: '/admin/field-work/new', label: 'New Field Note' },
+  { href: '/admin/cast-iron/new', label: 'New Recipe' },
   { href: '/admin/adventures/new', label: 'New Adventure' },
   { href: '/admin/films/new', label: 'Add Film' },
   { href: '/admin/pins', label: 'Drop a Pin' },
@@ -12,54 +13,22 @@ const quickActions = [
 export default async function AdminDashboard() {
   const supabase = await createClient()
 
-  // Fetch KPI counts in parallel
-  const [photos, posts, films, pins, subscribers] = await Promise.all([
+  const [photos, posts, recipes, films, pins, subscribers] = await Promise.all([
     supabase.from('media_assets').select('*', { count: 'exact', head: true }),
     supabase.from('posts').select('*', { count: 'exact', head: true }),
+    supabase.from('recipes').select('*', { count: 'exact', head: true }),
     supabase.from('films').select('*', { count: 'exact', head: true }),
     supabase.from('map_pins').select('*', { count: 'exact', head: true }),
-    supabase
-      .from('subscribers')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'confirmed'),
+    supabase.from('subscribers').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
   ])
 
   const tiles = [
-    {
-      label: 'Photos',
-      count: photos.count ?? 0,
-      icon: Image,
-      href: '/admin/photos',
-      color: 'text-khaki',
-    },
-    {
-      label: 'Dispatches',
-      count: posts.count ?? 0,
-      icon: FileText,
-      href: '/admin/dispatches',
-      color: 'text-olive-2',
-    },
-    {
-      label: 'Films',
-      count: films.count ?? 0,
-      icon: Film,
-      href: '/admin/films',
-      color: 'text-accent',
-    },
-    {
-      label: 'Map Pins',
-      count: pins.count ?? 0,
-      icon: MapPin,
-      href: '/admin/pins',
-      color: 'text-khaki',
-    },
-    {
-      label: 'Subscribers',
-      count: subscribers.count ?? 0,
-      icon: Users,
-      href: '/admin/settings',
-      color: 'text-accent',
-    },
+    { label: 'Photos', count: photos.count ?? 0, icon: Image, href: '/admin/photos', color: 'text-khaki' },
+    { label: 'Field Work', count: posts.count ?? 0, icon: FileText, href: '/admin/field-work', color: 'text-olive-2' },
+    { label: 'Recipes', count: recipes.count ?? 0, icon: Flame, href: '/admin/cast-iron', color: 'text-accent' },
+    { label: 'Films', count: films.count ?? 0, icon: Film, href: '/admin/films', color: 'text-khaki' },
+    { label: 'Map Pins', count: pins.count ?? 0, icon: MapPin, href: '/admin/pins', color: 'text-olive-2' },
+    { label: 'Subscribers', count: subscribers.count ?? 0, icon: Users, href: '/admin/settings', color: 'text-accent' },
   ]
 
   return (
@@ -68,8 +37,7 @@ export default async function AdminDashboard() {
         Dashboard
       </h1>
 
-      {/* KPI tiles */}
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {tiles.map(({ label, count, icon: Icon, href, color }) => (
           <Link
             key={label}
@@ -83,7 +51,6 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      {/* Quick actions */}
       <div>
         <h2 className="font-display mb-4 text-xs font-700 uppercase tracking-widest text-khaki-deep">
           Quick Actions

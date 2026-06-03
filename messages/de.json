@@ -1,6 +1,7 @@
 {
   "nav": {
-    "dispatches": "Berichte",
+    "fieldWork": "Feldarbeit",
+    "castIron": "Gusseisen",
     "adventures": "Abenteuer",
     "films": "Filme",
     "map": "Karte",
@@ -9,12 +10,15 @@
   },
   "footer": {
     "tagline": "Weniger Glamping. Mehr Schotter.",
-    "dispatches": "Berichte",
+    "fieldWork": "Feldarbeit",
+    "castIron": "Gusseisen",
     "adventures": "Abenteuer",
     "films": "Filme",
     "map": "Karte",
     "privacy": "Datenschutz",
-    "copyright": "Travelling on Gravel. Alle Rechte vorbehalten."
+    "copyright": "Travelling on Gravel. Alle Rechte vorbehalten.",
+    "newsletterTeaser": "Keine Algorithmen. Kein gesponserter Kram. Nur ehrliche Feldnotizen.",
+    "newsletterLabel": "Abonnieren"
   },
   "hero": {
     "scrollDown": "Scrollen"
@@ -22,21 +26,46 @@
   "newsletter": {
     "placeholder": "deine@email.de",
     "submit": "Abonnieren",
-    "submitting": "Wird abonniert…",
-    "success": "Prüfe dein Postfach für einen Bestätigungslink.",
+    "submitting": "Wird abonniert\u2026",
+    "success": "Pr\u00fcfe dein Postfach f\u00fcr einen Best\u00e4tigungslink.",
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
-    "errorEmail": "Ungültige E-Mail-Adresse.",
-    "consent": "Double Opt-in. Jederzeit abmeldbar. Deine Daten bleiben hier."
+    "errorEmail": "Ung\u00fcltige E-Mail-Adresse.",
+    "consent": "Double Opt-in. Jederzeit abmeldbar. Deine Daten bleiben hier.",
+    "eyebrow": "Dein Publikum geh\u00f6rt dir",
+    "heading": "Feldnotizen\nin dein Postfach",
+    "body": "Keine Algorithmen. Kein gesponserter Kram. Ehrliche Berichte, wenn es etwas zu sagen gibt."
   },
-  "dispatches": {
-    "title": "Berichte",
-    "eyebrow": "Aus dem Gelände",
-    "empty": "Noch keine Berichte. Schau bald wieder vorbei."
+  "fieldWork": {
+    "title": "Feldarbeit",
+    "eyebrow": "Aus dem Gel\u00e4nde",
+    "empty": "Noch keine Feldnotizen. Schau bald wieder vorbei.",
+    "allPosts": "Alle Feldnotizen \u2192"
+  },
+  "castIron": {
+    "title": "Gusseisen",
+    "eyebrow": "Kochen, das ein Feuer braucht",
+    "tagline": "Kochen, das ein Feuer braucht, keine Mikrowelle.",
+    "empty": "Noch keine Rezepte. Schau bald wieder vorbei.",
+    "allRecipes": "Alle Rezepte \u2192",
+    "prep": "Vorbereitung",
+    "cook": "Kochen",
+    "total": "Gesamt",
+    "servings": "Portionen",
+    "ingredients": "Zutaten",
+    "method": "Zubereitung",
+    "tips": "Tipps",
+    "equipment": "Ausr\u00fcstung",
+    "minutes": "Min.",
+    "servingsLabel": "Portionen anpassen",
+    "difficultyEasy": "Einfach",
+    "difficultyMedium": "Mittel",
+    "difficultyHard": "Schwer",
+    "noImage": "Noch kein Foto"
   },
   "adventures": {
     "title": "Abenteuer",
     "eyebrow": "Erfahrungsberichte",
-    "empty": "Noch keine Abenteuer veröffentlicht."
+    "empty": "Noch keine Abenteuer ver\u00f6ffentlicht."
   },
   "films": {
     "title": "Filme",
@@ -44,10 +73,12 @@
   },
   "map": {
     "title": "Die Schotterkarte",
-    "eyebrow": "Überlandreise Afrika"
+    "eyebrow": "\u00dcberlandreise Afrika"
   },
-  "locale": {
-    "switchTo": "English",
-    "current": "DE"
+  "common": {
+    "published": "Ver\u00f6ffentlicht",
+    "draft": "Entwurf",
+    "readMore": "Mehr lesen",
+    "backToList": "Zur\u00fcck"
   }
 }

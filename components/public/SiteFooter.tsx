@@ -7,7 +7,8 @@ export async function SiteFooter() {
   const year = new Date().getFullYear()
 
   const footerNav = [
-    { href: '/dispatches' as const, label: t('dispatches') },
+    { href: '/field-work' as const, label: t('fieldWork') },
+    { href: '/cast-iron' as const, label: t('castIron') },
     { href: '/adventures' as const, label: t('adventures') },
     { href: '/films' as const, label: t('films') },
     { href: '/map' as const, label: t('map') },
@@ -47,16 +48,14 @@ export async function SiteFooter() {
           {/* Newsletter teaser */}
           <div>
             <p className="mb-3 text-xs font-700 uppercase tracking-widest text-khaki-deep">
-              Dispatches to your inbox
+              Field Notes to your inbox
             </p>
-            <p className="mb-4 text-xs leading-relaxed text-khaki">
-              No algorithms. No sponsored fluff. Just honest gravel dispatches.
-            </p>
+            <p className="mb-4 text-xs leading-relaxed text-khaki">{t('newsletterTeaser')}</p>
             <LocaleLink
               href="/#newsletter"
               className="inline-block rounded border border-accent px-4 py-2 text-xs font-700 uppercase tracking-widest text-accent transition-colors hover:bg-accent hover:text-bone"
             >
-              {t('dispatches')}
+              {t('newsletterLabel')}
             </LocaleLink>
           </div>
         </div>

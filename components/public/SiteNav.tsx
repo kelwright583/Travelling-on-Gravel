@@ -12,7 +12,8 @@ export function SiteNav() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const navLinks = [
-    { href: '/dispatches' as const, label: t('dispatches') },
+    { href: '/field-work' as const, label: t('fieldWork') },
+    { href: '/cast-iron' as const, label: t('castIron') },
     { href: '/adventures' as const, label: t('adventures') },
     { href: '/films' as const, label: t('films') },
     { href: '/map' as const, label: t('map') },
@@ -65,7 +66,7 @@ export function SiteNav() {
             </Link>
           ))}
           <Link
-            href="/dispatches#newsletter"
+            href="/field-work#newsletter"
             className="rounded border border-accent px-4 py-1.5 text-xs font-700 uppercase tracking-widest text-accent transition-colors hover:bg-accent hover:text-bone"
           >
             {t('subscribe')}
@@ -127,7 +128,7 @@ export function SiteNav() {
             </Link>
           ))}
           <Link
-            href="/dispatches#newsletter"
+            href="/field-work#newsletter"
             className="mt-4 inline-block rounded border border-accent px-4 py-2 text-center text-xs font-700 uppercase tracking-widest text-accent"
             onClick={() => setMenuOpen(false)}
           >

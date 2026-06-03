@@ -13,6 +13,7 @@ import {
   LogOut,
   ExternalLink,
   Mountain,
+  Flame,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
@@ -21,7 +22,8 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/hero', label: 'Hero', icon: Mountain },
   { href: '/admin/photos', label: 'Photos', icon: Image },
-  { href: '/admin/dispatches', label: 'Dispatches', icon: FileText },
+  { href: '/admin/field-work', label: 'Field Work', icon: FileText },
+  { href: '/admin/cast-iron', label: 'Cast Iron', icon: Flame },
   { href: '/admin/adventures', label: 'Adventures', icon: Map },
   { href: '/admin/films', label: 'Films', icon: Film },
   { href: '/admin/pins', label: 'Map Pins', icon: Map },
