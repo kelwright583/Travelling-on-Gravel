@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -44,11 +45,12 @@ export default async function FieldWorkPage() {
 
       {posts && posts.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
+          {posts.map((post, i) => (
             <Link
               key={post.id}
               href={`/field-work/${post.slug}`}
-              className="group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+              className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+              style={{ '--reveal-delay': `${i * 70}ms` } as React.CSSProperties}
             >
               <div className="duotone relative aspect-[16/9] bg-olive/30">
                 {post.cover_image ? (

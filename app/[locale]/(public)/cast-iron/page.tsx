@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -55,7 +56,7 @@ export default async function CastIronPage() {
 
       {recipes && recipes.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {recipes.map((recipe) => {
+          {recipes.map((recipe, i) => {
             const title =
               typeof recipe.title === 'object' && recipe.title !== null
                 ? (recipe.title as { en?: string }).en ?? ''
@@ -71,7 +72,8 @@ export default async function CastIronPage() {
               <Link
                 key={recipe.id}
                 href={`/cast-iron/${recipe.slug}`}
-                className="group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+                className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+                style={{ '--reveal-delay': `${i * 70}ms` } as React.CSSProperties}
               >
                 <div className="relative aspect-[4/3] bg-olive/20">
                   {recipe.cover_image ? (

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -30,7 +31,7 @@ export async function CastIronPreview({ recipes }: CastIronPreviewProps) {
     <section aria-label="Cast Iron Recipes" className="bg-ink py-20">
       <div className="mx-auto max-w-[1240px] px-6">
         {/* Header */}
-        <div className="mb-10 flex items-end justify-between">
+        <div className="scroll-reveal mb-10 flex items-end justify-between">
           <div>
             <p className="mb-2 text-xs font-700 uppercase tracking-widest text-accent">
               {tc('eyebrow')}
@@ -49,7 +50,7 @@ export async function CastIronPreview({ recipes }: CastIronPreviewProps) {
 
         {/* Grid */}
         <div className="grid gap-6 md:grid-cols-3">
-          {recipes.map((recipe) => {
+          {recipes.map((recipe, i) => {
             const title =
               typeof recipe.title === 'object' && recipe.title !== null
                 ? (recipe.title as { en?: string }).en ?? ''
@@ -64,7 +65,8 @@ export async function CastIronPreview({ recipes }: CastIronPreviewProps) {
               <Link
                 key={recipe.id}
                 href={`/cast-iron/${recipe.slug}`}
-                className="group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+                className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
+                style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
               >
                 {/* Cover image */}
                 <div className="relative aspect-[4/3] bg-olive/20">

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { X, Play } from 'lucide-react'
 import type { Database } from '@/db/types'
 import { t } from '@/lib/i18n/types'
@@ -59,7 +59,7 @@ export function FilmsStrip({ films }: FilmsStripProps) {
       <section aria-label="The Gravel Files" className="bg-ink py-20">
         <div className="mx-auto max-w-[1240px] px-6">
           {/* Header */}
-          <div className="mb-10 flex items-end justify-between">
+          <div className="scroll-reveal mb-10 flex items-end justify-between">
             <div>
               <p className="mb-2 text-xs font-700 uppercase tracking-widest text-accent">
                 On screen
@@ -80,7 +80,7 @@ export function FilmsStrip({ films }: FilmsStripProps) {
 
           {/* Film grid */}
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {films.map((film) => {
+            {films.map((film, i) => {
               const thumb =
                 film.thumbnail ??
                 `https://img.youtube.com/vi/${film.youtube_id}/maxresdefault.jpg`
@@ -89,8 +89,9 @@ export function FilmsStrip({ films }: FilmsStripProps) {
                   key={film.id}
                   type="button"
                   onClick={() => setActive(film)}
-                  className="group relative overflow-hidden rounded-lg border border-line bg-ink-soft text-left transition-colors hover:border-accent/40"
+                  className="scroll-reveal group relative overflow-hidden rounded-lg border border-line bg-ink-soft text-left transition-colors hover:border-accent/40"
                   aria-label={`Play ${t(film.title, 'en')}`}
+                  style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
                 >
                   {/* Thumbnail */}
                   <div className="duotone relative aspect-video">

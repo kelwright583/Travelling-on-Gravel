@@ -1,3 +1,4 @@
+import React from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
@@ -28,7 +29,7 @@ export async function FieldWorkPreview({ posts }: FieldWorkPreviewProps) {
     <section aria-label="Latest Field Work" className="bg-ink-soft py-20">
       <div className="mx-auto max-w-[1240px] px-6">
         {/* Header */}
-        <div className="mb-10 flex items-end justify-between">
+        <div className="scroll-reveal mb-10 flex items-end justify-between">
           <div>
             <p className="mb-2 text-xs font-700 uppercase tracking-widest text-accent">
               {tl('eyebrow')}
@@ -47,11 +48,12 @@ export async function FieldWorkPreview({ posts }: FieldWorkPreviewProps) {
 
         {/* Grid */}
         <div className="grid gap-6 md:grid-cols-3">
-          {posts.map((post) => (
+          {posts.map((post, i) => (
             <Link
               key={post.id}
               href={`/field-work/${post.slug}`}
-              className="group block overflow-hidden rounded-lg border border-line bg-ink transition-colors hover:border-accent/40"
+              className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink transition-colors hover:border-accent/40"
+              style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
             >
               {/* Cover image */}
               <div className="duotone relative aspect-[16/9] bg-ink-soft">

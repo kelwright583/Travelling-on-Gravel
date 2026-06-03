@@ -59,7 +59,7 @@ export function AdventuresCarousel({ adventures }: AdventuresCarouselProps) {
     <section aria-label="Featured Adventures" className="bg-ink py-20">
       <div className="mx-auto max-w-[1240px] px-6">
         {/* Section header */}
-        <div className="mb-10 flex items-end justify-between">
+        <div className="scroll-reveal mb-10 flex items-end justify-between">
           <div>
             <p className="mb-2 text-xs font-700 uppercase tracking-widest text-accent">
               Featured
@@ -78,7 +78,8 @@ export function AdventuresCarousel({ adventures }: AdventuresCarouselProps) {
 
         {/* Carousel track — exactly one slide visible via overflow-hidden + translateX */}
         <div
-          className="relative overflow-hidden rounded-lg"
+          className="scroll-reveal relative overflow-hidden rounded-lg"
+          style={{ '--reveal-delay': '100ms' } as React.CSSProperties}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onTouchStart={onTouchStart}

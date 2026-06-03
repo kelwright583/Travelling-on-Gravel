@@ -152,12 +152,43 @@ export function Hero({ settings }: HeroProps) {
 
           {/* Headline */}
           {(line1 || line2) && (
-            <h1
-              className="hero-reveal font-display mb-6 text-[clamp(3rem,9vw,7.5rem)] font-900 uppercase leading-[0.9] tracking-tight"
-              style={{ '--delay': '100ms' } as React.CSSProperties}
-            >
-              {line1 && <span className="block" style={{ color: colors.line1 }}>{line1}</span>}
-              {line2 && <span className="block" style={{ color: colors.line2 }}>{line2}</span>}
+            <h1 className="font-display mb-6 text-[clamp(3rem,9vw,7.5rem)] font-900 uppercase leading-[0.9] tracking-tight">
+              {line1 && (() => {
+                const words = line1.split(' ')
+                return (
+                  <span className="block" style={{ color: colors.line1 }}>
+                    {words.map((word, i) => (
+                      <span key={i} className="hero-word">
+                        <span
+                          className="hero-word-inner"
+                          style={{ '--word-delay': `${100 + i * 80}ms` } as React.CSSProperties}
+                        >
+                          {word}
+                        </span>
+                        {i < words.length - 1 && '\u00A0'}
+                      </span>
+                    ))}
+                  </span>
+                )
+              })()}
+              {line2 && (() => {
+                const words = line2.split(' ')
+                return (
+                  <span className="block" style={{ color: colors.line2 }}>
+                    {words.map((word, i) => (
+                      <span key={i} className="hero-word">
+                        <span
+                          className="hero-word-inner"
+                          style={{ '--word-delay': `${300 + i * 80}ms` } as React.CSSProperties}
+                        >
+                          {word}
+                        </span>
+                        {i < words.length - 1 && '\u00A0'}
+                      </span>
+                    ))}
+                  </span>
+                )
+              })()}
             </h1>
           )}
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import type { Json } from '@/db/types'
 import type { Stat } from '@/lib/i18n/types'
 import { t } from '@/lib/i18n/types'
@@ -77,7 +77,13 @@ export function StatsStrip({ stats }: StatsStripProps) {
       <div className="mx-auto max-w-[1240px] px-6 py-12">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {items.map((stat, i) => (
-            <StatItem key={i} stat={stat} active={active} />
+            <div
+              key={i}
+              className="scroll-reveal"
+              style={{ '--reveal-delay': `${i * 80}ms` } as React.CSSProperties}
+            >
+              <StatItem stat={stat} active={active} />
+            </div>
           ))}
         </div>
       </div>
