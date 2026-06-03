@@ -534,6 +534,7 @@ export type Database = {
       site_settings: {
         Row: {
           fonts: Json
+          hero_colors: Json | null
           hero_coords: string | null
           hero_image: string | null
           hero_line1: Json
@@ -548,6 +549,7 @@ export type Database = {
         }
         Insert: {
           fonts?: Json
+          hero_colors?: Json | null
           hero_coords?: string | null
           hero_image?: string | null
           hero_line1?: Json
@@ -562,6 +564,7 @@ export type Database = {
         }
         Update: {
           fonts?: Json
+          hero_colors?: Json | null
           hero_coords?: string | null
           hero_image?: string | null
           hero_line1?: Json

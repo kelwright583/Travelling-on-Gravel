@@ -19,6 +19,97 @@ const initial: HeroState = { message: '', ok: false }
 const inputClass =
   'w-full rounded border border-line bg-ink px-3 py-2 text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none'
 
+// ── Colour types ───────────────────────────────────────────────────────────────
+
+export type HeroColors = {
+  eyebrow: string
+  line1: string
+  line2: string
+  subtitle: string
+  overlay: number  // 0-100 darkening strength
+}
+
+const DEFAULT_COLORS: HeroColors = {
+  eyebrow: '#D75E2C',
+  line1: '#EFEAD9',
+  line2: '#D75E2C',
+  subtitle: '#B9A77B',
+  overlay: 40,
+}
+
+function parseColors(raw: unknown): HeroColors {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return DEFAULT_COLORS
+  const r = raw as Record<string, unknown>
+  return {
+    eyebrow: typeof r.eyebrow === 'string' ? r.eyebrow : DEFAULT_COLORS.eyebrow,
+    line1: typeof r.line1 === 'string' ? r.line1 : DEFAULT_COLORS.line1,
+    line2: typeof r.line2 === 'string' ? r.line2 : DEFAULT_COLORS.line2,
+    subtitle: typeof r.subtitle === 'string' ? r.subtitle : DEFAULT_COLORS.subtitle,
+    overlay: typeof r.overlay === 'number' ? r.overlay : DEFAULT_COLORS.overlay,
+  }
+}
+
+// ── Colour picker ──────────────────────────────────────────────────────────────
+
+const PALETTE = [
+  { label: 'Bone', hex: '#EFEAD9' },
+  { label: 'Khaki', hex: '#B9A77B' },
+  { label: 'Khaki deep', hex: '#8E7C50' },
+  { label: 'Accent', hex: '#D75E2C' },
+  { label: 'Accent soft', hex: '#E8814F' },
+  { label: 'Olive', hex: '#3B4329' },
+  { label: 'White', hex: '#FFFFFF' },
+  { label: 'Black', hex: '#000000' },
+]
+
+function ColorPicker({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <div
+          className="h-3 w-3 flex-shrink-0 rounded-full border border-line/60 shadow"
+          style={{ backgroundColor: value }}
+        />
+        <p className="text-[10px] font-700 uppercase tracking-widest text-khaki-deep">{label}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {PALETTE.map(({ label: pl, hex }) => (
+          <button
+            key={hex}
+            type="button"
+            title={pl}
+            onClick={() => onChange(hex)}
+            className={`h-5 w-5 rounded-full border-2 transition-all hover:scale-110 ${
+              value.toLowerCase() === hex.toLowerCase()
+                ? 'border-bone scale-110 shadow-md'
+                : 'border-transparent hover:border-bone/40'
+            }`}
+            style={{ backgroundColor: hex }}
+          />
+        ))}
+        <div className="flex items-center gap-1.5 ml-1">
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-[5.5rem] rounded border border-line bg-ink px-2 py-0.5 font-mono text-[11px] text-bone focus:border-accent focus:outline-none"
+            placeholder="#EFEAD9"
+            maxLength={7}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function locStr(v: unknown): string {
   if (!v || typeof v !== 'object' || Array.isArray(v)) return ''
   return String((v as Record<string, unknown>)['en'] ?? '')
@@ -282,6 +373,7 @@ type PreviewData = {
   location: string
   coords: string
   heroImage: string | null
+  colors: HeroColors
 }
 
 function HeroPreviewModal({ data, onClose }: { data: PreviewData; onClose: () => void }) {
@@ -326,21 +418,27 @@ function HeroPreviewModal({ data, onClose }: { data: PreviewData; onClose: () =>
           />
         </div>
 
+        {/* Configurable darkening overlay */}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: '#15150F', opacity: (data.colors.overlay / 100) * 0.75 }}
+        />
+
         {/* Content */}
         <div className="relative z-10 mt-auto px-6 pb-16 md:px-12 lg:px-20">
           <div className="max-w-[800px]">
             {(data.location || data.coords) && (
-              <p className="mb-5 text-xs font-600 uppercase tracking-[0.3em] text-accent">
+              <p className="mb-5 text-xs font-600 uppercase tracking-[0.3em]" style={{ color: data.colors.eyebrow }}>
                 {data.location}
-                {data.coords && <span className="ml-4 text-khaki-deep">{data.coords}</span>}
+                {data.coords && <span className="ml-4 opacity-60">{data.coords}</span>}
               </p>
             )}
             <h1 className="font-display mb-6 text-[clamp(3rem,9vw,7.5rem)] font-900 uppercase leading-[0.9] tracking-tight">
-              {data.line1 && <span className="block text-bone">{data.line1}</span>}
-              {data.line2 && <span className="block text-accent">{data.line2}</span>}
+              {data.line1 && <span className="block" style={{ color: data.colors.line1 }}>{data.line1}</span>}
+              {data.line2 && <span className="block" style={{ color: data.colors.line2 }}>{data.line2}</span>}
             </h1>
             {data.subtitle && (
-              <p className="max-w-lg text-sm leading-relaxed text-khaki">{data.subtitle}</p>
+              <p className="max-w-lg text-sm leading-relaxed" style={{ color: data.colors.subtitle }}>{data.subtitle}</p>
             )}
           </div>
         </div>
@@ -363,6 +461,11 @@ export function HeroEditor({ settings }: { settings: Settings | null }) {
   const [taglines, setTaglines] = useState<string[]>([])
   const [preview, setPreview] = useState<PreviewData | null>(null)
   const [heroImage, setHeroImage] = useState<string | null>(settings?.hero_image ?? null)
+  const [colors, setColors] = useState<HeroColors>(() => parseColors(settings?.hero_colors))
+
+  function setColor(key: keyof Omit<HeroColors, 'overlay'>, value: string) {
+    setColors((c) => ({ ...c, [key]: value }))
+  }
 
   function openPreview() {
     const get = (selector: string) =>
@@ -375,6 +478,7 @@ export function HeroEditor({ settings }: { settings: Settings | null }) {
       location:  get('input[name="hero_location"]'),
       coords:    get('input[name="hero_coords"]'),
       heroImage,
+      colors,
     })
   }
 
@@ -387,6 +491,8 @@ export function HeroEditor({ settings }: { settings: Settings | null }) {
         <input type="hidden" name="hero_line1_de" value="" />
         <input type="hidden" name="hero_line2_de" value="" />
         <input type="hidden" name="hero_subtitle_de" value="" />
+        {/* Serialised colours */}
+        <input type="hidden" name="hero_colors_json" value={JSON.stringify(colors)} />
 
         <HeroImagePicker
           defaultValue={settings?.hero_image}
@@ -493,6 +599,85 @@ export function HeroEditor({ settings }: { settings: Settings | null }) {
             className={inputClass}
           />
         </FormField>
+
+        {/* ── Text colours ── */}
+        <div className="space-y-4 rounded-lg border border-line bg-ink p-5">
+          <div>
+            <p className="text-xs font-700 uppercase tracking-widest text-bone">Text colours</p>
+            <p className="mt-0.5 text-[10px] text-khaki-deep">
+              Choose from the brand palette or enter any hex value
+            </p>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <ColorPicker
+              label="Eyebrow text"
+              value={colors.eyebrow}
+              onChange={(v) => setColor('eyebrow', v)}
+            />
+            <ColorPicker
+              label="Headline line 1"
+              value={colors.line1}
+              onChange={(v) => setColor('line1', v)}
+            />
+            <ColorPicker
+              label="Headline line 2"
+              value={colors.line2}
+              onChange={(v) => setColor('line2', v)}
+            />
+            <ColorPicker
+              label="Subtitle"
+              value={colors.subtitle}
+              onChange={(v) => setColor('subtitle', v)}
+            />
+          </div>
+
+          {/* Live preview strip */}
+          <div
+            className="rounded border border-line/40 px-4 py-3"
+            style={{ backgroundColor: '#15150F' }}
+          >
+            <p className="mb-0.5 text-[10px] font-600 uppercase tracking-[0.25em]" style={{ color: colors.eyebrow }}>
+              Eyebrow text
+            </p>
+            <p className="font-display text-2xl font-900 uppercase leading-tight tracking-tight" style={{ color: colors.line1 }}>
+              Headline line 1
+            </p>
+            <p className="font-display text-2xl font-900 uppercase leading-tight tracking-tight" style={{ color: colors.line2 }}>
+              Headline line 2
+            </p>
+            <p className="mt-1 text-xs leading-relaxed" style={{ color: colors.subtitle }}>
+              Subtitle text preview
+            </p>
+          </div>
+        </div>
+
+        {/* ── Image overlay strength ── */}
+        <div className="space-y-3 rounded-lg border border-line bg-ink p-5">
+          <div>
+            <p className="text-xs font-700 uppercase tracking-widest text-bone">
+              Image overlay strength
+            </p>
+            <p className="mt-0.5 text-[10px] text-khaki-deep">
+              Controls how much the background image is darkened — higher makes text more legible
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={colors.overlay}
+              onChange={(e) => setColors((c) => ({ ...c, overlay: parseInt(e.target.value) }))}
+              className="flex-1 accent-accent"
+            />
+            <span className="w-10 text-right font-mono text-sm text-bone">{colors.overlay}%</span>
+          </div>
+          <div className="flex justify-between text-[10px] text-khaki-deep">
+            <span>Light (0%)</span>
+            <span>Current: {colors.overlay}%</span>
+            <span>Dark (100%)</span>
+          </div>
+        </div>
 
         {/* Preview + Save */}
         <div className="flex items-center gap-3 pt-2">

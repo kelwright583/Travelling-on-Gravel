@@ -39,6 +39,16 @@ export function Hero({ settings }: HeroProps) {
   const themeMeta = settings?.theme as Record<string, unknown> | null
   const duotone = themeMeta?.hero_duotone !== false // default true
 
+  // Text colours from hero_colors jsonb (with fallbacks)
+  const rawColors = settings?.hero_colors as Record<string, unknown> | null
+  const colors = {
+    eyebrow: typeof rawColors?.eyebrow === 'string' ? rawColors.eyebrow : '#D75E2C',
+    line1: typeof rawColors?.line1 === 'string' ? rawColors.line1 : '#EFEAD9',
+    line2: typeof rawColors?.line2 === 'string' ? rawColors.line2 : '#D75E2C',
+    subtitle: typeof rawColors?.subtitle === 'string' ? rawColors.subtitle : '#B9A77B',
+    overlay: typeof rawColors?.overlay === 'number' ? rawColors.overlay : 40,
+  }
+
   // No settings at all — show branded setup state
   if (!settings) {
     return (
@@ -108,15 +118,20 @@ export function Hero({ settings }: HeroProps) {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to top, var(--ink) 0%, var(--ink)/80 25%, transparent 60%)',
+              'linear-gradient(to top, #15150F 0%, color-mix(in srgb, #15150F 85%, transparent) 30%, transparent 75%)',
           }}
+        />
+        {/* Configurable darkening overlay */}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: '#15150F', opacity: (colors.overlay / 100) * 0.75 }}
         />
         {/* Side vignette */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(ellipse at 20% 80%, transparent 40%, var(--ink)/60 100%)',
+              'radial-gradient(ellipse at 20% 80%, transparent 40%, color-mix(in srgb, #15150F 60%, transparent) 100%)',
           }}
         />
       </div>
@@ -127,11 +142,11 @@ export function Hero({ settings }: HeroProps) {
           {/* Eyebrow */}
           {(location || coords) && (
             <p
-              className="hero-reveal mb-5 text-xs font-600 uppercase tracking-[0.3em] text-accent"
-              style={{ '--delay': '0ms' } as React.CSSProperties}
+              className="hero-reveal mb-5 text-xs font-600 uppercase tracking-[0.3em]"
+              style={{ '--delay': '0ms', color: colors.eyebrow } as React.CSSProperties}
             >
               {location}
-              {coords && <span className="ml-4 text-khaki-deep">{coords}</span>}
+              {coords && <span className="ml-4 opacity-60">{coords}</span>}
             </p>
           )}
 
@@ -141,8 +156,8 @@ export function Hero({ settings }: HeroProps) {
               className="hero-reveal font-display mb-6 text-[clamp(3rem,9vw,7.5rem)] font-900 uppercase leading-[0.9] tracking-tight"
               style={{ '--delay': '100ms' } as React.CSSProperties}
             >
-              {line1 && <span className="block text-bone">{line1}</span>}
-              {line2 && <span className="block text-accent">{line2}</span>}
+              {line1 && <span className="block" style={{ color: colors.line1 }}>{line1}</span>}
+              {line2 && <span className="block" style={{ color: colors.line2 }}>{line2}</span>}
             </h1>
           )}
 
@@ -174,7 +189,7 @@ export function Hero({ settings }: HeroProps) {
           style={{ '--delay': '400ms' } as React.CSSProperties}
           aria-hidden="true"
         >
-          <p className="font-mono text-[10px] tracking-widest text-khaki-deep">{coords}</p>
+          <p className="font-mono text-[10px] tracking-widest" style={{ color: colors.eyebrow, opacity: 0.6 }}>{coords}</p>
         </div>
       )}
 
