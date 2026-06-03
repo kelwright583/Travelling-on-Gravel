@@ -133,15 +133,26 @@ export function FilmEditor({ film }: { film?: Film }) {
             />
           </FormField>
           <FormField label="Status">
-            <label className="flex cursor-pointer items-center gap-3 pt-5">
-              <input
-                type="checkbox"
-                name="published"
-                defaultChecked={film?.published ?? false}
-                className="h-4 w-4 rounded border-line accent-accent"
-              />
-              <span className="text-sm text-bone">Published</span>
-            </label>
+            <div className="flex flex-col gap-2 pt-5">
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="checkbox"
+                  name="published"
+                  defaultChecked={film?.published ?? false}
+                  className="h-4 w-4 rounded border-line accent-accent"
+                />
+                <span className="text-sm text-bone">Published</span>
+              </label>
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="checkbox"
+                  name="cover_overlay"
+                  defaultChecked={film?.cover_overlay ?? true}
+                  className="h-4 w-4 rounded border-line accent-accent"
+                />
+                <span className="text-sm text-bone">Card image overlay</span>
+              </label>
+            </div>
           </FormField>
         </div>
 

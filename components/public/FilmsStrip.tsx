@@ -94,7 +94,7 @@ export function FilmsStrip({ films }: FilmsStripProps) {
                   style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
                 >
                   {/* Thumbnail */}
-                  <div className="duotone relative aspect-video">
+                  <div className={`${film.cover_overlay !== false ? 'duotone ' : ''}relative aspect-video`}>
                     <Image
                       src={thumb}
                       alt={t(film.title, 'en')}

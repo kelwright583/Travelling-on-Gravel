@@ -98,7 +98,7 @@ export function AdventuresCarousel({ adventures }: AdventuresCarouselProps) {
                 aria-label={t(adv.title, 'en')}
               >
                 {/* Image */}
-                <div className="duotone relative aspect-[16/9] w-full bg-ink-soft md:aspect-[21/9]">
+                <div className={`${adv.cover_overlay !== false ? 'duotone ' : ''}relative aspect-[16/9] w-full bg-ink-soft md:aspect-[21/9]`}>
                   {adv.cover_image ? (
                     <Image
                       src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${adv.cover_image}`}

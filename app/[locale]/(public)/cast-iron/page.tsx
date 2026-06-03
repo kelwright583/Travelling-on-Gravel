@@ -38,7 +38,7 @@ export default async function CastIronPage() {
 
   const { data: recipes } = await supabase
     .from('recipes')
-    .select('id, slug, title, subtitle, cover_image, prep_minutes, cook_minutes, servings, difficulty, cook_method, ingredients, tags')
+    .select('id, slug, title, subtitle, cover_image, cover_overlay, prep_minutes, cook_minutes, servings, difficulty, cook_method, ingredients, tags')
     .eq('published', true)
     .order('published_at', { ascending: false })
 
@@ -75,7 +75,7 @@ export default async function CastIronPage() {
                 className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
                 style={{ '--reveal-delay': `${i * 70}ms` } as React.CSSProperties}
               >
-                <div className="relative aspect-[4/3] bg-olive/20">
+                <div className={`${recipe.cover_overlay ? 'duotone ' : ''}relative aspect-[4/3] bg-olive/20`}>
                   {recipe.cover_image ? (
                     <Image
                       src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${recipe.cover_image}`}

@@ -51,7 +51,7 @@ export function DispatchesPreview({ posts }: DispatchesPreviewProps) {
               className="group block overflow-hidden rounded-lg border border-line bg-ink transition-colors hover:border-accent/40"
             >
               {/* Cover image */}
-              <div className="duotone relative aspect-[16/9] bg-ink-soft">
+              <div className={`${post.cover_overlay !== false ? 'duotone ' : ''}relative aspect-[16/9] bg-ink-soft`}>
                 {post.cover_image ? (
                   <Image
                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${post.cover_image}`}

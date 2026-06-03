@@ -36,7 +36,7 @@ export default async function AdventuresPage() {
               href={`/adventures/${adv.slug}`}
               className="group relative block overflow-hidden rounded-lg border border-line"
             >
-              <div className="duotone relative aspect-[16/9] bg-olive/30">
+              <div className={`${adv.cover_overlay !== false ? 'duotone ' : ''}relative aspect-[16/9] bg-olive/30`}>
                 {adv.cover_image && (
                   <Image
                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${adv.cover_image}`}

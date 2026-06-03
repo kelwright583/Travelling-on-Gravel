@@ -15,6 +15,7 @@ const schema = z.object({
   body_en: z.string().optional(),
   tags_json: z.string().optional(),
   published: z.string().optional(),
+  cover_overlay: z.string().optional(),
   published_at: z.string().optional(),
   cover_image: z.string().optional(),
 })
@@ -39,6 +40,7 @@ function buildPayload(raw: z.infer<typeof schema>) {
     body: raw.body_en ? { en: raw.body_en } : null,
     tags,
     published: raw.published === 'on',
+    cover_overlay: raw.cover_overlay === 'on',
     published_at: raw.published_at || null,
     cover_image: raw.cover_image || null,
   }
@@ -52,6 +54,7 @@ function extractRaw(formData: FormData) {
     body_en: (formData.get('body_en') as string) || undefined,
     tags_json: (formData.get('tags_json') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
+    cover_overlay: (formData.get('cover_overlay') as string) || undefined,
     published_at: (formData.get('published_at') as string) || undefined,
     cover_image: (formData.get('cover_image') as string) || undefined,
   }

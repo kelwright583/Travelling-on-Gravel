@@ -33,6 +33,7 @@ export interface RecipePayload {
   equipment: { en: string }[]
   tags: string[]
   published: boolean
+  cover_overlay: boolean
   published_at?: string | null
 }
 
@@ -54,6 +55,7 @@ function buildPayload(data: RecipePayload) {
     equipment: data.equipment as unknown as Json,
     tags: data.tags,
     published: data.published,
+    cover_overlay: data.cover_overlay,
     published_at: data.published_at ?? null,
   }
 }

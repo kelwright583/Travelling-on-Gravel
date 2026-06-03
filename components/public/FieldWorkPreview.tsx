@@ -56,7 +56,7 @@ export async function FieldWorkPreview({ posts }: FieldWorkPreviewProps) {
               style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
             >
               {/* Cover image */}
-              <div className="duotone relative aspect-[16/9] bg-ink-soft">
+              <div className={`${post.cover_overlay !== false ? 'duotone ' : ''}relative aspect-[16/9] bg-ink-soft`}>
                 {post.cover_image ? (
                   <Image
                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${post.cover_image}`}

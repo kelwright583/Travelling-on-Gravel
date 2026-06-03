@@ -21,6 +21,7 @@ const schema = z.object({
   duration: z.string().optional(),
   sort_order: z.string().optional(),
   published: z.string().optional(),
+  cover_overlay: z.string().optional(),
 })
 
 export type FilmState = { message: string; ok: boolean }
@@ -41,6 +42,7 @@ function extractRaw(formData: FormData) {
     duration: (formData.get('duration') as string) || undefined,
     sort_order: (formData.get('sort_order') as string) || undefined,
     published: (formData.get('published') as string) || undefined,
+    cover_overlay: (formData.get('cover_overlay') as string) || undefined,
   }
 }
 
@@ -54,6 +56,7 @@ function buildPayload(raw: z.infer<typeof schema>) {
     duration: raw.duration || null,
     sort_order: raw.sort_order ? parseInt(raw.sort_order, 10) : null,
     published: raw.published === 'on',
+    cover_overlay: raw.cover_overlay === 'on',
   }
 }
 

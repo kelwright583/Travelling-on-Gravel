@@ -64,7 +64,7 @@ export default async function FieldWorkDetailPage({ params }: Props) {
 
       {/* Cover image */}
       {post.cover_image ? (
-        <div className="duotone relative mb-10 aspect-[16/9] overflow-hidden rounded-lg">
+        <div className="relative mb-10 aspect-[16/9] overflow-hidden rounded-lg">
           <Image
             src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${post.cover_image}`}
             alt={title}

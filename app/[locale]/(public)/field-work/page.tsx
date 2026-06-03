@@ -52,7 +52,7 @@ export default async function FieldWorkPage() {
               className="scroll-reveal group block overflow-hidden rounded-lg border border-line bg-ink-soft transition-colors hover:border-accent/40"
               style={{ '--reveal-delay': `${i * 70}ms` } as React.CSSProperties}
             >
-              <div className="duotone relative aspect-[16/9] bg-olive/30">
+              <div className={`${post.cover_overlay !== false ? 'duotone ' : ''}relative aspect-[16/9] bg-olive/30`}>
                 {post.cover_image ? (
                   <Image
                     src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${post.cover_image}`}

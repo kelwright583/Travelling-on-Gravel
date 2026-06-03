@@ -69,7 +69,7 @@ export async function CastIronPreview({ recipes }: CastIronPreviewProps) {
                 style={{ '--reveal-delay': `${i * 90}ms` } as React.CSSProperties}
               >
                 {/* Cover image */}
-                <div className="relative aspect-[4/3] bg-olive/20">
+                <div className={`${recipe.cover_overlay ? 'duotone ' : ''}relative aspect-[4/3] bg-olive/20`}>
                   {recipe.cover_image ? (
                     <Image
                       src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media/${recipe.cover_image}`}

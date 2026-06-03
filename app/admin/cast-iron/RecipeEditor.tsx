@@ -555,6 +555,7 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
       equipment: equipment.filter(Boolean).map((e) => ({ en: e })),
       tags,
       published: (form?.querySelector<HTMLInputElement>('[name="published"]')?.checked) ?? false,
+      cover_overlay: (form?.querySelector<HTMLInputElement>('[name="cover_overlay"]')?.checked) ?? false,
       published_at: get('published_at') || null,
     }
   }, [ingredients, steps, tips, equipment, tags, recipe?.cover_image, slug, titleEn])
@@ -745,15 +746,26 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
               />
             </FormField>
             <FormField label="Status">
-              <label className="flex cursor-pointer items-center gap-3 pt-5">
-                <input
-                  type="checkbox"
-                  name="published"
-                  defaultChecked={recipe?.published ?? false}
-                  className="h-4 w-4 rounded border-line accent-accent"
-                />
-                <span className="text-sm text-bone">Published</span>
-              </label>
+              <div className="flex flex-col gap-2 pt-5">
+                <label className="flex cursor-pointer items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="published"
+                    defaultChecked={recipe?.published ?? false}
+                    className="h-4 w-4 rounded border-line accent-accent"
+                  />
+                  <span className="text-sm text-bone">Published</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="cover_overlay"
+                    defaultChecked={recipe?.cover_overlay ?? false}
+                    className="h-4 w-4 rounded border-line accent-accent"
+                  />
+                  <span className="text-sm text-bone">Card image overlay</span>
+                </label>
+              </div>
             </FormField>
           </div>
           <div className="mt-6">

@@ -134,6 +134,7 @@ export type Database = {
           body: Json | null
           country: string | null
           cover_image: string | null
+          cover_overlay: boolean | null
           created_at: string | null
           end_date: string | null
           excerpt: Json | null
@@ -158,6 +159,7 @@ export type Database = {
           body?: Json | null
           country?: string | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           end_date?: string | null
           excerpt?: Json | null
@@ -182,6 +184,7 @@ export type Database = {
           body?: Json | null
           country?: string | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           end_date?: string | null
           excerpt?: Json | null
@@ -227,6 +230,7 @@ export type Database = {
       }
       films: {
         Row: {
+          cover_overlay: boolean | null
           created_at: string | null
           description: Json | null
           duration: string | null
@@ -239,6 +243,7 @@ export type Database = {
           youtube_url: string
         }
         Insert: {
+          cover_overlay?: boolean | null
           created_at?: string | null
           description?: Json | null
           duration?: string | null
@@ -251,6 +256,7 @@ export type Database = {
           youtube_url: string
         }
         Update: {
+          cover_overlay?: boolean | null
           created_at?: string | null
           description?: Json | null
           duration?: string | null
@@ -358,6 +364,7 @@ export type Database = {
           body: Json | null
           category_id: string | null
           cover_image: string | null
+          cover_overlay: boolean | null
           created_at: string | null
           excerpt: Json | null
           id: string
@@ -373,6 +380,7 @@ export type Database = {
           body?: Json | null
           category_id?: string | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           excerpt?: Json | null
           id?: string
@@ -388,6 +396,7 @@ export type Database = {
           body?: Json | null
           category_id?: string | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           excerpt?: Json | null
           id?: string
@@ -444,6 +453,7 @@ export type Database = {
           cook_method: string | null
           cook_minutes: number | null
           cover_image: string | null
+          cover_overlay: boolean | null
           created_at: string | null
           difficulty: string | null
           equipment: Json | null
@@ -472,6 +482,7 @@ export type Database = {
           cook_method?: string | null
           cook_minutes?: number | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           difficulty?: string | null
           equipment?: Json | null
@@ -500,6 +511,7 @@ export type Database = {
           cook_method?: string | null
           cook_minutes?: number | null
           cover_image?: string | null
+          cover_overlay?: boolean | null
           created_at?: string | null
           difficulty?: string | null
           equipment?: Json | null
