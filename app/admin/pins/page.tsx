@@ -1,18 +1,9 @@
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/server'
 import type { MapPin } from '@/lib/maps/google'
+import { AdminPinsMapClient } from './AdminPinsMapClient'
 
 export const metadata = { title: 'Map Pins | Base Camp' }
-
-const AdminPinsMap = dynamic(
-  () => import('@/components/admin/AdminPinsMap').then((m) => m.AdminPinsMap),
-  { ssr: false, loading: () => (
-    <div className="flex items-center justify-center rounded-lg border border-line bg-ink" style={{ height: 320 }}>
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-line border-t-accent" />
-    </div>
-  )},
-)
 
 export default async function PinsAdminPage() {
   const supabase = await createClient()
@@ -53,7 +44,7 @@ export default async function PinsAdminPage() {
       {/* Overview map */}
       {mapPins.length > 0 && (
         <div className="mb-6">
-          <AdminPinsMap pins={mapPins} />
+          <AdminPinsMapClient pins={mapPins} />
         </div>
       )}
 
