@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { t } from '@/lib/i18n/types'
+import type { Json } from '@/db/types'
 
 export const revalidate = 60
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 type Adventure = {
   id: string
   slug: string
-  title: unknown
+  title: Json
   country: string | null
   cover_image: string | null
   cover_overlay: boolean | null
