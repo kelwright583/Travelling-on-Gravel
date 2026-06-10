@@ -28,6 +28,10 @@ const schema = z.object({
   status: z.string().optional(),
   vehicle: z.string().optional(),
   total_distance_km: z.string().optional(),
+  countries_csv: z.string().optional(),
+  prep_items_json: z.string().optional(),
+  budget_zar: z.string().optional(),
+  budget_notes: z.string().optional(),
 })
 
 export type AdventureState = { message: string; ok: boolean }
@@ -41,6 +45,12 @@ async function getAuthUser() {
 }
 
 function buildPayload(raw: z.infer<typeof schema>) {
+  const countries = raw.countries_csv
+    ? raw.countries_csv.split(',').map((s) => s.trim()).filter(Boolean)
+    : []
+  let prepItems = []
+  try { prepItems = raw.prep_items_json ? JSON.parse(raw.prep_items_json) : [] } catch { prepItems = [] }
+
   return {
     title: { en: raw.title_en },
     slug: raw.slug,
@@ -58,9 +68,13 @@ function buildPayload(raw: z.infer<typeof schema>) {
     cover_image: raw.cover_image || null,
     start_date: raw.start_date || null,
     end_date: raw.end_date || null,
-    status: raw.status || 'planning',
+    status: raw.status || 'dreaming',
     vehicle: raw.vehicle || null,
     total_distance_km: raw.total_distance_km ? parseInt(raw.total_distance_km, 10) : null,
+    countries,
+    prep_items: prepItems,
+    budget_zar: raw.budget_zar ? parseInt(raw.budget_zar, 10) : null,
+    budget_notes: raw.budget_notes || null,
   }
 }
 
@@ -85,6 +99,10 @@ function extractRaw(formData: FormData) {
     status: (formData.get('status') as string) || undefined,
     vehicle: (formData.get('vehicle') as string) || undefined,
     total_distance_km: (formData.get('total_distance_km') as string) || undefined,
+    countries_csv: (formData.get('countries_csv') as string) || undefined,
+    prep_items_json: (formData.get('prep_items_json') as string) || undefined,
+    budget_zar: (formData.get('budget_zar') as string) || undefined,
+    budget_notes: (formData.get('budget_notes') as string) || undefined,
   }
 }
 
@@ -143,4 +161,34 @@ export async function deleteAdventure(id: string): Promise<void> {
   revalidatePath('/adventures')
   revalidatePath('/')
   redirect('/admin/adventures')
+}
+
+export async function goLive(id: string): Promise<AdventureState> {
+  const { supabase, user } = await getAuthUser()
+  if (!user) return { message: 'Unauthorized', ok: false }
+
+  const { error } = await supabase
+    .from('adventures')
+    .update({ status: 'live', actual_departure: new Date().toISOString() })
+    .eq('id', id)
+
+  if (error) return { message: error.message, ok: false }
+  revalidatePath('/adventures')
+  revalidatePath('/')
+  return { message: 'Adventure is now LIVE. Drive safe.', ok: true }
+}
+
+export async function goReviewing(id: string): Promise<AdventureState> {
+  const { supabase, user } = await getAuthUser()
+  if (!user) return { message: 'Unauthorized', ok: false }
+
+  const { error } = await supabase
+    .from('adventures')
+    .update({ status: 'reviewing', actual_return: new Date().toISOString() })
+    .eq('id', id)
+
+  if (error) return { message: error.message, ok: false }
+  revalidatePath('/adventures')
+  revalidatePath('/')
+  return { message: 'Welcome back. Write it up while it\'s fresh.', ok: true }
 }

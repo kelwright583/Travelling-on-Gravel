@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useState, useEffect, useCallback } from 'react'
+import { useActionState, useState, useEffect, useCallback, useTransition } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { LocalizedInput } from '@/components/admin/LocalizedInput'
@@ -14,7 +14,8 @@ import { EntryModal } from '@/components/admin/EntryModal'
 import type { EntryMarker } from '@/components/admin/AdventureMap'
 import type { DiaryEntry } from '@/components/admin/EntryModal'
 import type { ItineraryItem } from '@/components/admin/ItineraryPanel'
-import { createAdventure, updateAdventure, deleteAdventure, type AdventureState } from './actions'
+import { createAdventure, updateAdventure, deleteAdventure, goLive, goReviewing, type AdventureState } from './actions'
+import { PrepChecklist, type PrepItem } from '@/components/admin/PrepChecklist'
 import type { Tables } from '@/db/types'
 import { Plus, Map, List, Route, BarChart2, Tent, Fuel, AlertTriangle, Wrench } from 'lucide-react'
 
@@ -49,9 +50,12 @@ function setField(name: string, value: string) {
 const initial: AdventureState = { message: '', ok: false }
 
 const STATUS_OPTIONS = [
-  { value: 'planning', label: 'Planning', color: 'text-khaki-deep bg-ink border-line' },
-  { value: 'active', label: 'On the road', color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/40' },
-  { value: 'completed', label: 'Completed', color: 'text-accent bg-accent/10 border-accent/40' },
+  { value: 'dreaming',  label: 'Dreaming',      color: 'text-khaki-deep/70 bg-ink border-line/50' },
+  { value: 'planning',  label: 'Planning',       color: 'text-khaki bg-ink-soft border-line' },
+  { value: 'confirmed', label: 'Confirmed',      color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/40' },
+  { value: 'live',      label: 'Live — on road', color: 'text-red-400 bg-red-400/10 border-red-400/40' },
+  { value: 'reviewing', label: 'Reviewing',      color: 'text-olive-2 bg-olive/10 border-olive/40' },
+  { value: 'archived',  label: 'Archived',       color: 'text-accent bg-accent/10 border-accent/40' },
 ]
 
 const INPUT =
@@ -117,7 +121,12 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
   const deleteAction = adventure ? deleteAdventure.bind(null, adventure.id) : null
 
   const [tab, setTab] = useState<Tab>('overview')
-  const [status, setStatus] = useState(adventure?.status ?? 'planning')
+  const [status, setStatus] = useState(adventure?.status ?? 'dreaming')
+  const [prepItems, setPrepItems] = useState<PrepItem[]>(
+    Array.isArray(adventure?.prep_items) ? (adventure.prep_items as unknown as PrepItem[]) : []
+  )
+  const [actionMsg, setActionMsg] = useState('')
+  const [actionPending, startActionTransition] = useTransition()
 
   // Diary state
   const [entries, setEntries] = useState<DiaryEntry[]>([])
@@ -209,6 +218,54 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
           </form>
         )}
       </div>
+
+      {/* Go Live / I'm Back action banners */}
+      {adventure && status === 'confirmed' && (
+        <div className="mb-4 flex items-center justify-between rounded-lg border border-yellow-400/30 bg-yellow-400/5 px-4 py-3">
+          <div>
+            <p className="text-xs font-700 uppercase tracking-widest text-yellow-400">Ready to roll?</p>
+            <p className="text-xs text-khaki-deep">Set the adventure live — records departure time and activates the live map.</p>
+          </div>
+          <button
+            type="button"
+            disabled={actionPending}
+            onClick={() => startActionTransition(async () => {
+              const r = await goLive(adventure.id)
+              setStatus('live')
+              setActionMsg(r.message)
+            })}
+            className="rounded border border-yellow-400 bg-yellow-400/10 px-5 py-2 text-xs font-700 uppercase tracking-widest text-yellow-400 hover:bg-yellow-400 hover:text-ink transition-colors disabled:opacity-50"
+          >
+            {actionPending ? 'Going live…' : 'GO LIVE'}
+          </button>
+        </div>
+      )}
+      {adventure && status === 'live' && (
+        <div className="mb-4 flex items-center justify-between rounded-lg border border-red-400/30 bg-red-400/5 px-4 py-3">
+          <div>
+            <p className="text-xs font-700 uppercase tracking-widest text-red-400 flex items-center gap-2">
+              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-400" />
+              LIVE — on the road
+            </p>
+            <p className="text-xs text-khaki-deep">Back home? Record your return and start writing it up.</p>
+          </div>
+          <button
+            type="button"
+            disabled={actionPending}
+            onClick={() => startActionTransition(async () => {
+              const r = await goReviewing(adventure.id)
+              setStatus('reviewing')
+              setActionMsg(r.message)
+            })}
+            className="rounded border border-accent bg-accent/10 px-5 py-2 text-xs font-700 uppercase tracking-widest text-accent hover:bg-accent hover:text-bone transition-colors disabled:opacity-50"
+          >
+            {actionPending ? 'Recording…' : "I'M BACK"}
+          </button>
+        </div>
+      )}
+      {actionMsg && (
+        <p className="mb-4 text-xs text-accent">{actionMsg}</p>
+      )}
 
       {/* Tabs */}
       <div className="mb-6 flex gap-1 overflow-x-auto border-b border-line pb-px">
@@ -338,7 +395,7 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Country">
+            <FormField label="Primary country">
               <input
                 type="text"
                 name="country"
@@ -357,6 +414,18 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
               />
             </FormField>
           </div>
+
+          <FormField label="Countries crossed" hint="Comma-separated — shown as trip stats on the public page">
+            <input
+              type="text"
+              name="countries_csv"
+              defaultValue={
+                Array.isArray(adventure?.countries) ? (adventure.countries as string[]).join(', ') : ''
+              }
+              placeholder="South Africa, Botswana, Namibia, Zimbabwe"
+              className={INPUT}
+            />
+          </FormField>
 
           <LocalizedInput
             label="Excerpt"
@@ -383,6 +452,38 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
               onApply={(text) => setField('body_en', text)}
               fieldLabel="the adventure write-up"
             />
+          </div>
+
+          {/* Budget */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField label="Trip budget (ZAR)" hint="Shown on the public page with a currency converter">
+              <input
+                type="number"
+                name="budget_zar"
+                defaultValue={adventure?.budget_zar ?? ''}
+                placeholder="45000"
+                className={INPUT}
+              />
+            </FormField>
+            <FormField label="Budget notes" hint="Context for the budget figure">
+              <input
+                type="text"
+                name="budget_notes"
+                defaultValue={adventure?.budget_notes ?? ''}
+                placeholder="Fuel + accommodation + border fees, excluding gear"
+                className={INPUT}
+              />
+            </FormField>
+          </div>
+
+          {/* Prep checklist */}
+          <div>
+            <p className="mb-1 text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Prep checklist</p>
+            <p className="mb-3 text-xs text-khaki-deep/70">
+              Tick items as you complete them — this feeds the "trip loading" progress bar on the public page.
+            </p>
+            <input type="hidden" name="prep_items_json" value={JSON.stringify(prepItems)} />
+            <PrepChecklist items={prepItems} onChange={setPrepItems} />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
