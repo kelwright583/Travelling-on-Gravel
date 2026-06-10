@@ -18,53 +18,53 @@ export type Database = {
         Row: {
           adventure_id: string
           body: string | null
-          created_at: string
-          data: Json
+          created_at: string | null
+          data: Json | null
           id: string
-          images: string[]
+          images: string[] | null
           lat: number | null
           lng: number | null
           location_name: string | null
-          occurred_at: string
+          occurred_at: string | null
           rating: number | null
-          tags: string[]
+          tags: string[] | null
           title: string | null
           type: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
           adventure_id: string
           body?: string | null
-          created_at?: string
-          data?: Json
+          created_at?: string | null
+          data?: Json | null
           id?: string
-          images?: string[]
+          images?: string[] | null
           lat?: number | null
           lng?: number | null
           location_name?: string | null
-          occurred_at?: string
+          occurred_at?: string | null
           rating?: number | null
-          tags?: string[]
+          tags?: string[] | null
           title?: string | null
           type: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
           adventure_id?: string
           body?: string | null
-          created_at?: string
-          data?: Json
+          created_at?: string | null
+          data?: Json | null
           id?: string
-          images?: string[]
+          images?: string[] | null
           lat?: number | null
           lng?: number | null
           location_name?: string | null
-          occurred_at?: string
+          occurred_at?: string | null
           rating?: number | null
-          tags?: string[]
+          tags?: string[] | null
           title?: string | null
           type?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -80,7 +80,7 @@ export type Database = {
         Row: {
           actual_entry_id: string | null
           adventure_id: string
-          created_at: string
+          created_at: string | null
           day_number: number | null
           description: string | null
           id: string
@@ -88,13 +88,13 @@ export type Database = {
           lng: number | null
           location_name: string | null
           planned_date: string | null
-          sort_order: number
+          sort_order: number | null
           title: string
         }
         Insert: {
           actual_entry_id?: string | null
           adventure_id: string
-          created_at?: string
+          created_at?: string | null
           day_number?: number | null
           description?: string | null
           id?: string
@@ -102,13 +102,13 @@ export type Database = {
           lng?: number | null
           location_name?: string | null
           planned_date?: string | null
-          sort_order?: number
+          sort_order?: number | null
           title: string
         }
         Update: {
           actual_entry_id?: string | null
           adventure_id?: string
-          created_at?: string
+          created_at?: string | null
           day_number?: number | null
           description?: string | null
           id?: string
@@ -116,10 +116,17 @@ export type Database = {
           lng?: number | null
           location_name?: string | null
           planned_date?: string | null
-          sort_order?: number
+          sort_order?: number | null
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "adventure_itinerary_actual_entry_id_fkey"
+            columns: ["actual_entry_id"]
+            isOneToOne: false
+            referencedRelation: "adventure_entries"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "adventure_itinerary_adventure_id_fkey"
             columns: ["adventure_id"]
@@ -131,10 +138,15 @@ export type Database = {
       }
       adventures: {
         Row: {
+          actual_departure: string | null
+          actual_return: string | null
           body: Json | null
+          budget_notes: string | null
+          budget_zar: number | null
+          countries: string[] | null
           country: string | null
           cover_image: string | null
-          cover_overlay: boolean | null
+          cover_overlay: boolean
           created_at: string | null
           end_date: string | null
           excerpt: Json | null
@@ -143,6 +155,7 @@ export type Database = {
           lat: number | null
           lng: number | null
           location: string | null
+          prep_items: Json | null
           published: boolean | null
           published_at: string | null
           slug: string
@@ -156,10 +169,15 @@ export type Database = {
           vehicle: string | null
         }
         Insert: {
+          actual_departure?: string | null
+          actual_return?: string | null
           body?: Json | null
+          budget_notes?: string | null
+          budget_zar?: number | null
+          countries?: string[] | null
           country?: string | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           end_date?: string | null
           excerpt?: Json | null
@@ -168,6 +186,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           location?: string | null
+          prep_items?: Json | null
           published?: boolean | null
           published_at?: string | null
           slug: string
@@ -181,10 +200,15 @@ export type Database = {
           vehicle?: string | null
         }
         Update: {
+          actual_departure?: string | null
+          actual_return?: string | null
           body?: Json | null
+          budget_notes?: string | null
+          budget_zar?: number | null
+          countries?: string[] | null
           country?: string | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           end_date?: string | null
           excerpt?: Json | null
@@ -193,6 +217,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           location?: string | null
+          prep_items?: Json | null
           published?: boolean | null
           published_at?: string | null
           slug?: string
@@ -230,7 +255,7 @@ export type Database = {
       }
       films: {
         Row: {
-          cover_overlay: boolean | null
+          cover_overlay: boolean
           created_at: string | null
           description: Json | null
           duration: string | null
@@ -243,7 +268,7 @@ export type Database = {
           youtube_url: string
         }
         Insert: {
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           description?: Json | null
           duration?: string | null
@@ -256,7 +281,7 @@ export type Database = {
           youtube_url: string
         }
         Update: {
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           description?: Json | null
           duration?: string | null
@@ -364,7 +389,7 @@ export type Database = {
           body: Json | null
           category_id: string | null
           cover_image: string | null
-          cover_overlay: boolean | null
+          cover_overlay: boolean
           created_at: string | null
           excerpt: Json | null
           id: string
@@ -380,7 +405,7 @@ export type Database = {
           body?: Json | null
           category_id?: string | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           excerpt?: Json | null
           id?: string
@@ -396,7 +421,7 @@ export type Database = {
           body?: Json | null
           category_id?: string | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           excerpt?: Json | null
           id?: string
@@ -453,7 +478,7 @@ export type Database = {
           cook_method: string | null
           cook_minutes: number | null
           cover_image: string | null
-          cover_overlay: boolean | null
+          cover_overlay: boolean
           created_at: string | null
           difficulty: string | null
           equipment: Json | null
@@ -482,7 +507,7 @@ export type Database = {
           cook_method?: string | null
           cook_minutes?: number | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           difficulty?: string | null
           equipment?: Json | null
@@ -511,7 +536,7 @@ export type Database = {
           cook_method?: string | null
           cook_minutes?: number | null
           cover_image?: string | null
-          cover_overlay?: boolean | null
+          cover_overlay?: boolean
           created_at?: string | null
           difficulty?: string | null
           equipment?: Json | null
