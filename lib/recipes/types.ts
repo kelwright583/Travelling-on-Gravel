@@ -34,7 +34,7 @@ export interface AiNotes {
 }
 
 export const UNITS = [
-  'g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'clove', 'whole', 'pinch', 'to taste',
+  'g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'clove', 'whole', 'pinch', 'squeeze', 'dash', 'to taste',
   'handful', 'slice', 'piece', 'can', 'stick', 'bunch',
 ] as const
 

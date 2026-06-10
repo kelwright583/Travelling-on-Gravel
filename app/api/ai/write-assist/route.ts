@@ -20,28 +20,36 @@ export async function POST(req: NextRequest) {
   if (mode === 'polish') {
     if (!text?.trim()) return NextResponse.json({ error: 'No text provided' }, { status: 400 })
 
+    // For long text, asking for 3 full rewrites blows the token budget and produces truncated JSON.
+    // Instead, list specific issues and provide a single corrected version.
+    const isLong = text.length > 1200
+    const polishPrompt = isLong
+      ? `Review the following text for spelling, grammar, punctuation, and clarity. List each issue found. Then return ONE corrected version that fixes all issues while preserving every detail, the author's voice, and the original length — do not summarise or shorten. Return JSON: { "issues": ["..."], "suggestions": [{ "label": "Corrected", "text": "..." }] }\n\nText:\n${text}`
+      : `Review the following text for spelling, grammar, and clarity. Then offer 2–3 improved versions that preserve the author's voice. Return JSON: { "issues": ["..."], "suggestions": [{ "label": "...", "text": "..." }] }\n\nText:\n${text}`
+
     const completion = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: BRAND_VOICE },
-        {
-          role: 'user',
-          content: `Review the following text for spelling, grammar, and clarity. Then offer 2–3 improved versions that preserve the author's voice. Return JSON: { "issues": ["..."], "suggestions": [{ "label": "...", "text": "..." }] }\n\nText:\n${text}`,
-        },
+        { role: 'user', content: polishPrompt },
       ],
       response_format: { type: 'json_object' },
-      max_tokens: 1200,
+      max_tokens: isLong ? 4000 : 1800,
     })
 
-    const result = JSON.parse(completion.choices[0]?.message?.content ?? '{}')
-    return NextResponse.json({ ok: true, ...result })
+    try {
+      const result = JSON.parse(completion.choices[0]?.message?.content ?? '{}')
+      return NextResponse.json({ ok: true, ...result })
+    } catch {
+      return NextResponse.json({ error: 'AI returned an unexpected response. Try again.' }, { status: 500 })
+    }
   }
 
   if (mode === 'brainstorm') {
     if (!userPrompt?.trim()) return NextResponse.json({ error: 'No prompt provided' }, { status: 400 })
 
     const contextClause = text?.trim()
-      ? `\n\nExisting content for context:\n${text.slice(0, 600)}`
+      ? `\n\nExisting content for context:\n${text.slice(0, 800)}`
       : ''
 
     const completion = await client.chat.completions.create({
@@ -54,11 +62,15 @@ export async function POST(req: NextRequest) {
         },
       ],
       response_format: { type: 'json_object' },
-      max_tokens: 1200,
+      max_tokens: 1600,
     })
 
-    const result = JSON.parse(completion.choices[0]?.message?.content ?? '{}')
-    return NextResponse.json({ ok: true, ...result })
+    try {
+      const result = JSON.parse(completion.choices[0]?.message?.content ?? '{}')
+      return NextResponse.json({ ok: true, ...result })
+    } catch {
+      return NextResponse.json({ error: 'AI returned an unexpected response. Try again.' }, { status: 500 })
+    }
   }
 
   return NextResponse.json({ error: 'Invalid mode' }, { status: 400 })

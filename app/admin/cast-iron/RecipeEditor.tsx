@@ -112,12 +112,37 @@ function TextareaInput({ label, name, defaultValue, placeholder, rows = 4 }: {
 // --- ingredients builder ---
 
 function IngredientRow({
-  item, groupId, onChange, onRemove,
+  item, groupId, onChange, onRemove, customUnits, onAddCustomUnit,
 }: {
   item: Ingredient; groupId: string
   onChange: (groupId: string, id: string, field: string, value: unknown) => void
   onRemove: (groupId: string, id: string) => void
+  customUnits: string[]
+  onAddCustomUnit: (unit: string) => void
 }) {
+  const [unitValue, setUnitValue] = useState<string>(item.unit ?? '')
+  const [showOther, setShowOther] = useState(false)
+  const [otherText, setOtherText] = useState('')
+
+  function handleSelectChange(val: string) {
+    if (val === '__other__') {
+      setShowOther(true)
+      setOtherText('')
+    } else {
+      setUnitValue(val)
+      onChange(groupId, item.id, 'unit', val || null)
+    }
+  }
+
+  function commitOther() {
+    const trimmed = otherText.trim()
+    if (!trimmed) { setShowOther(false); return }
+    onAddCustomUnit(trimmed)
+    setUnitValue(trimmed)
+    setShowOther(false)
+    onChange(groupId, item.id, 'unit', trimmed)
+  }
+
   return (
     <div className="grid grid-cols-[80px_120px_1fr_1fr_24px] gap-2 items-start">
       <input
@@ -127,14 +152,29 @@ function IngredientRow({
         onBlur={(e) => onChange(groupId, item.id, 'qty', parseFraction(e.target.value))}
         className="rounded border border-line bg-ink px-2 py-1.5 text-xs text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
       />
-      <select
-        defaultValue={item.unit ?? ''}
-        onChange={(e) => onChange(groupId, item.id, 'unit', e.target.value || null)}
-        className="rounded border border-line bg-ink px-2 py-1.5 text-xs text-bone focus:border-accent focus:outline-none"
-      >
-        <option value="">Unit</option>
-        {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
-      </select>
+      {showOther ? (
+        <input
+          type="text"
+          placeholder="e.g. squeeze"
+          value={otherText}
+          onChange={(e) => setOtherText(e.target.value)}
+          onBlur={commitOther}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commitOther() } if (e.key === 'Escape') { setShowOther(false) } }}
+          autoFocus
+          className="rounded border border-accent bg-ink px-2 py-1.5 text-xs text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
+        />
+      ) : (
+        <select
+          value={unitValue}
+          onChange={(e) => handleSelectChange(e.target.value)}
+          className="rounded border border-line bg-ink px-2 py-1.5 text-xs text-bone focus:border-accent focus:outline-none"
+        >
+          <option value="">Unit</option>
+          {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+          {customUnits.map((u) => <option key={`c-${u}`} value={u}>{u}</option>)}
+          <option value="__other__">Other…</option>
+        </select>
+      )}
       <input
         type="text"
         placeholder="Ingredient"
@@ -164,6 +204,20 @@ function IngredientRow({
 function IngredientsBuilder({
   groups, setGroups,
 }: { groups: IngredientGroup[]; setGroups: (g: IngredientGroup[]) => void }) {
+  const [customUnits, setCustomUnits] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return []
+    try { return JSON.parse(localStorage.getItem('tog_custom_units') ?? '[]') } catch { return [] }
+  })
+
+  const handleAddCustomUnit = useCallback((unit: string) => {
+    setCustomUnits((prev) => {
+      if ([...UNITS as readonly string[], ...prev].includes(unit)) return prev
+      const updated = [...prev, unit]
+      localStorage.setItem('tog_custom_units', JSON.stringify(updated))
+      return updated
+    })
+  }, [])
+
   const updateIngredient = useCallback((groupId: string, itemId: string, field: string, value: unknown) => {
     setGroups(groups.map((g) => {
       if (g.id !== groupId) return g
@@ -233,6 +287,8 @@ function IngredientsBuilder({
                 groupId={group.id}
                 onChange={updateIngredient}
                 onRemove={removeIngredient}
+                customUnits={customUnits}
+                onAddCustomUnit={handleAddCustomUnit}
               />
             ))}
           </div>
