@@ -1,20 +1,14 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { t } from '@/lib/i18n/types'
 import { AdventureCountdown } from '@/components/public/AdventureCountdown'
 import { CurrencyDisplay } from '@/components/public/CurrencyDisplay'
+import { RouteMap } from '@/components/public/RouteMapClient'
 
 export const revalidate = 60
-
-// Read-only map — no click handlers needed
-const RouteMap = dynamic(
-  () => import('@/components/admin/AdventureMap').then((m) => m.AdventureMap),
-  { ssr: false, loading: () => <div className="h-full w-full animate-pulse rounded-lg bg-ink-soft" /> },
-)
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>
