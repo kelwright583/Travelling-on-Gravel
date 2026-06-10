@@ -12,6 +12,7 @@ interface LocalizedInputProps {
   rows?: number
   placeholder?: string
   required?: boolean
+  onChange?: (value: string) => void
 }
 
 const inputClass =
@@ -26,6 +27,7 @@ export function LocalizedInput({
   rows = 3,
   placeholder,
   required,
+  onChange,
 }: LocalizedInputProps) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -41,6 +43,7 @@ export function LocalizedInput({
           placeholder={placeholder}
           rows={rows}
           required={required}
+          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
           className={cn(inputClass, 'resize-y')}
         />
       ) : (
@@ -50,6 +53,7 @@ export function LocalizedInput({
           defaultValue={defaultEn}
           placeholder={placeholder}
           required={required}
+          onChange={onChange ? (e) => onChange(e.target.value) : undefined}
           className={inputClass}
         />
       )}

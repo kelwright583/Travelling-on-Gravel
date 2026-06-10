@@ -130,6 +130,7 @@ export function PostEditor({ post }: { post?: Post }) {
   const [state, formAction, pending] = useActionState(saveAction, initial)
   const deleteAction = post ? deletePost.bind(null, post.id) : null
   const [tags, setTags] = useState<string[]>(post?.tags ?? [])
+  const [slug, setSlug] = useState(post?.slug ?? '')
 
   return (
     <div className="max-w-3xl">
@@ -164,22 +165,19 @@ export function PostEditor({ post }: { post?: Post }) {
           defaultEn={locStr(post?.title)}
           placeholder="Post title"
           required
+          onChange={(val) => { if (!post) setSlug(slugify(val)) }}
         />
 
-        <FormField label="Slug" hint="URL-safe, lowercase, hyphens only. Auto-filled from title on blur.">
+        <FormField label="Slug" hint="Auto-generated from title. Edit only if you need a custom URL.">
           <input
             type="text"
             name="slug"
-            defaultValue={post?.slug ?? ''}
-            placeholder="my-field-note-slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="auto-generated-from-title"
             pattern="[a-z0-9-]+"
             required
             className="w-full rounded border border-line bg-ink px-3 py-2 font-mono text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
-            onBlur={(e) => {
-              if (e.target.value) return
-              const titleInput = e.target.form?.querySelector<HTMLInputElement>('input[name="title_en"]')
-              if (titleInput?.value) e.target.value = slugify(titleInput.value)
-            }}
           />
         </FormField>
 

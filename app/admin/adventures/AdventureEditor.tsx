@@ -122,6 +122,7 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
 
   const [tab, setTab] = useState<Tab>('overview')
   const [status, setStatus] = useState(adventure?.status ?? 'dreaming')
+  const [slug, setSlug] = useState(adventure?.slug ?? '')
   const [prepItems, setPrepItems] = useState<PrepItem[]>(
     Array.isArray(adventure?.prep_items) ? (adventure.prep_items as unknown as PrepItem[]) : []
   )
@@ -332,171 +333,149 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
             defaultEn={locStr(adventure?.title)}
             placeholder="Adventure title"
             required
+            onChange={(val) => { if (!adventure) setSlug(slugify(val)) }}
           />
 
-          <FormField label="Slug" hint="URL-safe, lowercase, hyphens only. Auto-filled from title.">
+          <FormField label="Slug" hint="Auto-generated from title. Edit only if you need a custom URL.">
             <input
               type="text"
               name="slug"
-              defaultValue={adventure?.slug ?? ''}
-              placeholder="kaokoland-namibia"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="auto-generated-from-title"
               pattern="[a-z0-9-]+"
               required
               className={`${INPUT} font-mono`}
-              onBlur={(e) => {
-                if (e.target.value) return
-                const titleInput = e.target.form?.querySelector<HTMLInputElement>('input[name="title_en"]')
-                if (titleInput?.value) e.target.value = slugify(titleInput.value)
-              }}
             />
           </FormField>
 
           <PostCoverPicker name="cover_image" defaultValue={adventure?.cover_image} label="Cover Photo" />
 
-          {/* Trip details */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Vehicle / rig">
-              <input
-                type="text"
-                name="vehicle"
-                defaultValue={adventure?.vehicle ?? ''}
-                placeholder="Toyota Land Cruiser 79"
-                className={INPUT}
-              />
-            </FormField>
-            <FormField label="Total distance (km)" hint="Approximate — can update after the trip">
-              <input
-                type="number"
-                name="total_distance_km"
-                defaultValue={adventure?.total_distance_km ?? ''}
-                placeholder="8400"
-                className={INPUT}
-              />
-            </FormField>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Start date">
-              <input
-                type="date"
-                name="start_date"
-                defaultValue={adventure?.start_date ?? ''}
-                className={INPUT}
-              />
-            </FormField>
-            <FormField label="End date">
-              <input
-                type="date"
-                name="end_date"
-                defaultValue={adventure?.end_date ?? ''}
-                className={INPUT}
-              />
-            </FormField>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Primary country">
-              <input
-                type="text"
-                name="country"
-                defaultValue={adventure?.country ?? ''}
-                placeholder="Namibia"
-                className={INPUT}
-              />
-            </FormField>
-            <FormField label="Region / location">
-              <input
-                type="text"
-                name="location"
-                defaultValue={adventure?.location ?? ''}
-                placeholder="Kaokoland"
-                className={INPUT}
-              />
-            </FormField>
-          </div>
-
-          <FormField label="Countries crossed" hint="Comma-separated — shown as trip stats on the public page">
-            <input
-              type="text"
-              name="countries_csv"
-              defaultValue={
-                Array.isArray(adventure?.countries) ? (adventure.countries as string[]).join(', ') : ''
-              }
-              placeholder="South Africa, Botswana, Namibia, Zimbabwe"
-              className={INPUT}
-            />
-          </FormField>
+          {/* Dreaming: just the dream — mood, inspiration, wishlist thoughts */}
+          {status === 'dreaming' && (
+            <div className="rounded border border-line/40 bg-ink-soft px-4 py-3">
+              <p className="text-xs text-khaki-deep">
+                <span className="font-700 text-khaki">Dreaming phase</span> — write the dream. Where, why, the feeling. No dates or budget yet, just the pull of it.
+              </p>
+            </div>
+          )}
 
           <LocalizedInput
-            label="Excerpt"
+            label={status === 'dreaming' ? 'The dream' : 'Excerpt'}
             nameEn="excerpt_en"
             nameDe="excerpt_de"
             defaultEn={locStr(adventure?.excerpt)}
-            placeholder="Short teaser shown on the adventure listing…"
+            placeholder={status === 'dreaming' ? 'The idea, the itch, the inspiration…' : 'Short teaser shown on the adventure listing…'}
             multiline
             rows={3}
           />
 
           <div className="space-y-2">
             <LocalizedInput
-              label="About this adventure"
+              label={status === 'dreaming' ? 'Thoughts & wishlist' : 'About this adventure'}
               nameEn="body_en"
               nameDe="body_de"
               defaultEn={locStr(adventure?.body)}
-              placeholder="Full adventure write-up in Markdown…"
+              placeholder={status === 'dreaming'
+                ? 'Everything that keeps drawing you back to this idea — places, people, stories you\'ve heard. Markdown OK.'
+                : 'Full adventure write-up in Markdown…'}
               multiline
               rows={12}
             />
             <WritingAssistant
               getText={() => getField('body_en')}
               onApply={(text) => setField('body_en', text)}
-              fieldLabel="the adventure write-up"
+              fieldLabel={status === 'dreaming' ? 'the dream write-up' : 'the adventure write-up'}
             />
           </div>
 
-          {/* Budget */}
+          {/* Planning+ fields — not shown while still dreaming */}
+          {status !== 'dreaming' && (
+            <>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField label="Vehicle / rig">
+                  <input type="text" name="vehicle" defaultValue={adventure?.vehicle ?? ''} placeholder="Toyota Land Cruiser 79" className={INPUT} />
+                </FormField>
+                <FormField label="Total distance (km)" hint="Approximate — can update after the trip">
+                  <input type="number" name="total_distance_km" defaultValue={adventure?.total_distance_km ?? ''} placeholder="8400" className={INPUT} />
+                </FormField>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField label={status === 'planning' ? 'Rough departure date' : 'Departure date'}>
+                  <input type="date" name="start_date" defaultValue={adventure?.start_date ?? ''} className={INPUT} />
+                </FormField>
+                <FormField label={status === 'planning' ? 'Rough return date' : 'Return date'}>
+                  <input type="date" name="end_date" defaultValue={adventure?.end_date ?? ''} className={INPUT} />
+                </FormField>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField label="Primary country">
+                  <input type="text" name="country" defaultValue={adventure?.country ?? ''} placeholder="Namibia" className={INPUT} />
+                </FormField>
+                <FormField label="Region / location">
+                  <input type="text" name="location" defaultValue={adventure?.location ?? ''} placeholder="Kaokoland" className={INPUT} />
+                </FormField>
+              </div>
+
+              <FormField label="Countries crossed" hint="Comma-separated — shown as trip stats on the public page">
+                <input
+                  type="text"
+                  name="countries_csv"
+                  defaultValue={Array.isArray(adventure?.countries) ? (adventure.countries as string[]).join(', ') : ''}
+                  placeholder="South Africa, Botswana, Namibia, Zimbabwe"
+                  className={INPUT}
+                />
+              </FormField>
+
+              {/* Budget */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField label="Trip budget (ZAR)" hint="Shown with a live currency converter on the public page">
+                  <input type="number" name="budget_zar" defaultValue={adventure?.budget_zar ?? ''} placeholder="45000" className={INPUT} />
+                </FormField>
+                <FormField label="Budget notes" hint="What this figure covers">
+                  <input type="text" name="budget_notes" defaultValue={adventure?.budget_notes ?? ''} placeholder="Fuel + accommodation + border fees, excluding gear" className={INPUT} />
+                </FormField>
+              </div>
+
+              {/* Prep checklist */}
+              <div>
+                <p className="mb-1 text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Prep checklist</p>
+                <p className="mb-3 text-xs text-khaki-deep/70">
+                  Tick items as you complete them — feeds the &ldquo;trip loading&rdquo; progress bar on the public page.
+                </p>
+                <input type="hidden" name="prep_items_json" value={JSON.stringify(prepItems)} />
+                <PrepChecklist items={prepItems} onChange={setPrepItems} />
+              </div>
+            </>
+          )}
+
+          {/* Hidden fields to keep server action happy when dreaming (no form fields rendered) */}
+          {status === 'dreaming' && (
+            <>
+              <input type="hidden" name="vehicle" value="" />
+              <input type="hidden" name="total_distance_km" value="" />
+              <input type="hidden" name="start_date" value="" />
+              <input type="hidden" name="end_date" value="" />
+              <input type="hidden" name="country" value="" />
+              <input type="hidden" name="location" value="" />
+              <input type="hidden" name="countries_csv" value="" />
+              <input type="hidden" name="budget_zar" value="" />
+              <input type="hidden" name="budget_notes" value="" />
+              <input type="hidden" name="prep_items_json" value="[]" />
+            </>
+          )}
+
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField label="Trip budget (ZAR)" hint="Shown on the public page with a currency converter">
-              <input
-                type="number"
-                name="budget_zar"
-                defaultValue={adventure?.budget_zar ?? ''}
-                placeholder="45000"
-                className={INPUT}
-              />
-            </FormField>
-            <FormField label="Budget notes" hint="Context for the budget figure">
-              <input
-                type="text"
-                name="budget_notes"
-                defaultValue={adventure?.budget_notes ?? ''}
-                placeholder="Fuel + accommodation + border fees, excluding gear"
-                className={INPUT}
-              />
-            </FormField>
-          </div>
-
-          {/* Prep checklist */}
-          <div>
-            <p className="mb-1 text-[10px] font-700 uppercase tracking-widest text-khaki-deep">Prep checklist</p>
-            <p className="mb-3 text-xs text-khaki-deep/70">
-              Tick items as you complete them — this feeds the "trip loading" progress bar on the public page.
-            </p>
-            <input type="hidden" name="prep_items_json" value={JSON.stringify(prepItems)} />
-            <PrepChecklist items={prepItems} onChange={setPrepItems} />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <FormField label="Latitude" hint="Map centre point">
-              <input type="number" name="lat" step="any" defaultValue={adventure?.lat ?? ''} placeholder="-18.2358" className={INPUT} />
-            </FormField>
-            <FormField label="Longitude">
-              <input type="number" name="lng" step="any" defaultValue={adventure?.lng ?? ''} placeholder="13.1897" className={INPUT} />
-            </FormField>
-            <FormField label="Sort order" hint="Lower = shown first">
+            <FormField label="Sort order" hint="Lower = shown first on the listing page">
               <input type="number" name="sort_order" defaultValue={adventure?.sort_order ?? ''} placeholder="0" className={INPUT} />
             </FormField>
           </div>
+
+          {/* Hidden lat/lng preserved so existing map data isn't lost */}
+          <input type="hidden" name="lat" value={adventure?.lat ?? ''} />
+          <input type="hidden" name="lng" value={adventure?.lng ?? ''} />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField label="Published date">

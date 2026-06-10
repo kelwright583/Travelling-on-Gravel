@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { LocalizedInput } from '@/components/admin/LocalizedInput'
 import { FormField } from '@/components/admin/FormField'
@@ -40,6 +40,7 @@ export function PostEditor({ post }: { post?: Post }) {
   const saveAction = post ? updatePost.bind(null, post.id) : createPost
   const [state, formAction, pending] = useActionState(saveAction, initial)
   const deleteAction = post ? deletePost.bind(null, post.id) : null
+  const [slug, setSlug] = useState(post?.slug ?? '')
 
   return (
     <div className="max-w-3xl">
@@ -75,27 +76,19 @@ export function PostEditor({ post }: { post?: Post }) {
           defaultEn={locStr(post?.title)}
           placeholder="Dispatch title"
           required
+          onChange={(val) => { if (!post) setSlug(slugify(val)) }}
         />
 
-        <FormField
-          label="Slug"
-          hint="URL-safe, lowercase, hyphens only. Auto-filled from title on blur."
-        >
+        <FormField label="Slug" hint="Auto-generated from title. Edit only if you need a custom URL.">
           <input
             type="text"
             name="slug"
-            defaultValue={post?.slug ?? ''}
-            placeholder="my-dispatch-slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            placeholder="auto-generated-from-title"
             pattern="[a-z0-9-]+"
             required
             className="w-full rounded border border-line bg-ink px-3 py-2 font-mono text-sm text-bone placeholder:text-khaki-deep focus:border-accent focus:outline-none"
-            onBlur={(e) => {
-              if (e.target.value) return
-              const titleInput = e.target.form?.querySelector<HTMLInputElement>(
-                'input[name="title_en"]',
-              )
-              if (titleInput?.value) e.target.value = slugify(titleInput.value)
-            }}
           />
         </FormField>
 
