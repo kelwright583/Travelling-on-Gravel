@@ -7,6 +7,7 @@ import { t } from '@/lib/i18n/types'
 import { AdventureCountdown } from '@/components/public/AdventureCountdown'
 import { CurrencyDisplay } from '@/components/public/CurrencyDisplay'
 import { RouteMap } from '@/components/public/RouteMapClient'
+import type { Json } from '@/db/types'
 
 export const revalidate = 60
 
@@ -21,8 +22,8 @@ type Entry = {
   occurred_at: string; rating: number | null; data: Record<string, unknown>
 }
 type Adventure = {
-  id: string; slug: string; title: unknown; country: string | null; location: string | null
-  excerpt: unknown; body: unknown; cover_image: string | null; cover_overlay: boolean | null
+  id: string; slug: string; title: Json; country: string | null; location: string | null
+  excerpt: Json | null; body: Json | null; cover_image: string | null; cover_overlay: boolean | null
   status: string | null; start_date: string | null; end_date: string | null
   actual_departure: string | null; actual_return: string | null
   vehicle: string | null; total_distance_km: number | null
@@ -227,7 +228,7 @@ export default async function AdventureDetailPage({ params }: Props) {
   // For archived status: pull field notes published during the trip window
   const tripStart = adv.actual_departure ?? adv.start_date
   const tripEnd   = adv.actual_return   ?? adv.end_date
-  let fieldNotes: { id: string; slug: string; title: unknown; published_at: string | null; excerpt: unknown }[] = []
+  let fieldNotes: { id: string; slug: string; title: Json | null; published_at: string | null; excerpt: Json | null }[] = []
   if ((adv.status === 'archived' || adv.status === 'reviewing') && tripStart && tripEnd) {
     const { data: notes } = await supabase
       .from('posts')
