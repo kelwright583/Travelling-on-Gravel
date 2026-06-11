@@ -6,6 +6,7 @@ import { FormField } from '@/components/admin/FormField'
 import { PostCoverPicker } from '@/components/admin/PostCoverPicker'
 import { AiButton } from '@/components/admin/AiButton'
 import { WritingAssistant } from '@/components/admin/WritingAssistant'
+import { MarkdownBodyEditor } from '@/components/admin/MarkdownBodyEditor'
 import {
   createRecipe,
   updateRecipe,
@@ -676,11 +677,11 @@ export function RecipeEditor({ recipe }: { recipe?: Recipe }) {
             </FormField>
             <PostCoverPicker name="cover_image" defaultValue={recipe?.cover_image} label="Cover Photo" />
             <div className="space-y-2">
-              <TextareaInput
+              <MarkdownBodyEditor
                 label="Intro / Story"
                 name="intro_en"
                 defaultValue={locStr(recipe?.intro)}
-                placeholder="The story behind the dish — where you made it, why it matters. Markdown OK."
+                placeholder="The story behind the dish — where you made it, why it matters."
                 rows={6}
               />
               <WritingAssistant

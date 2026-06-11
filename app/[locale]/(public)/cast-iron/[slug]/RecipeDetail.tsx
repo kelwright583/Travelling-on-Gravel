@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import type { IngredientGroup, Step } from '@/lib/recipes/types'
+import { renderBody } from '@/lib/render-body'
 
 const METHOD_LABELS: Record<string, string> = {
   fire: 'Open Fire',
@@ -164,7 +165,7 @@ export function RecipeDetail({
 
       {/* Intro */}
       {intro && (
-        <p className="mb-10 text-sm leading-relaxed text-khaki">{intro}</p>
+        <div className="mb-10 text-sm leading-relaxed text-khaki">{renderBody(intro)}</div>
       )}
 
       <div className="grid gap-10 md:grid-cols-[1fr_2fr]">
