@@ -42,10 +42,10 @@ export function Hero({ settings }: HeroProps) {
   // Text colours from hero_colors jsonb (with fallbacks)
   const rawColors = settings?.hero_colors as Record<string, unknown> | null
   const colors = {
-    eyebrow: typeof rawColors?.eyebrow === 'string' ? rawColors.eyebrow : '#D75E2C',
-    line1: typeof rawColors?.line1 === 'string' ? rawColors.line1 : '#EFEAD9',
-    line2: typeof rawColors?.line2 === 'string' ? rawColors.line2 : '#D75E2C',
-    subtitle: typeof rawColors?.subtitle === 'string' ? rawColors.subtitle : '#B9A77B',
+    eyebrow: typeof rawColors?.eyebrow === 'string' ? rawColors.eyebrow : '#EA5B12',
+    line1: typeof rawColors?.line1 === 'string' ? rawColors.line1 : '#F8E8D8',
+    line2: typeof rawColors?.line2 === 'string' ? rawColors.line2 : '#EA5B12',
+    subtitle: typeof rawColors?.subtitle === 'string' ? rawColors.subtitle : '#E9D6BE',
     overlay: typeof rawColors?.overlay === 'number' ? rawColors.overlay : 40,
   }
 

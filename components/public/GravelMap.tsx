@@ -56,9 +56,9 @@ export function GravelMap({
             title: pin.label,
             icon: {
               path: google.maps.SymbolPath.CIRCLE,
-              fillColor: '#D75E2C',
+              fillColor: '#EA5B12',
               fillOpacity: 1,
-              strokeColor: '#EFEAD9',
+              strokeColor: '#F8E8D8',
               strokeWeight: 1.5,
               scale: 8,
             },
