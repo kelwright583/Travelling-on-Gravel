@@ -18,6 +18,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Dropzone } from './Dropzone'
+import { LocationPicker, type LocationValue } from './LocationPicker'
 
 export type EntryType =
   | 'checkin'
@@ -371,8 +372,8 @@ export function EntryModal({
   const [title, setTitle] = useState(entry?.title ?? '')
   const [body, setBody] = useState(entry?.body ?? '')
   const [locationName, setLocationName] = useState(entry?.location_name ?? '')
-  const [lat, setLat] = useState(String(entry?.lat ?? defaultLat ?? ''))
-  const [lng, setLng] = useState(String(entry?.lng ?? defaultLng ?? ''))
+  const [lat, setLat] = useState<number | null>(entry?.lat ?? defaultLat ?? null)
+  const [lng, setLng] = useState<number | null>(entry?.lng ?? defaultLng ?? null)
   const [occurredAt, setOccurredAt] = useState(
     entry?.occurred_at
       ? new Date(entry.occurred_at).toISOString().slice(0, 16)
@@ -400,8 +401,8 @@ export function EntryModal({
       title: title.trim() || null,
       body: body.trim() || null,
       location_name: locationName.trim() || null,
-      lat: lat ? parseFloat(lat) : null,
-      lng: lng ? parseFloat(lng) : null,
+      lat: lat ?? null,
+      lng: lng ?? null,
       occurred_at: new Date(occurredAt).toISOString(),
       rating: hasRating ? rating : null,
       data,
@@ -501,27 +502,24 @@ export function EntryModal({
           </div>
 
           <div>
-            <label className={LABEL}>Location name</label>
-            <input
-              type="text"
-              placeholder="Maun, Botswana"
-              className={INPUT}
-              value={locationName}
-              onChange={(e) => setLocationName(e.target.value)}
+            <p className={LABEL}>Location</p>
+            <LocationPicker
+              defaultLat={lat ?? undefined}
+              defaultLng={lng ?? undefined}
+              defaultName={locationName || undefined}
+              placeholder="Search for a place, camp, or town…"
+              onChange={(v: LocationValue | null) => {
+                if (v) {
+                  setLat(v.lat)
+                  setLng(v.lng)
+                  setLocationName(v.name)
+                } else {
+                  setLat(null)
+                  setLng(null)
+                  setLocationName('')
+                }
+              }}
             />
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className={LABEL}>Latitude</label>
-              <input type="number" step="any" placeholder="-18.234" className={INPUT}
-                value={lat} onChange={(e) => setLat(e.target.value)} />
-            </div>
-            <div>
-              <label className={LABEL}>Longitude</label>
-              <input type="number" step="any" placeholder="24.765" className={INPUT}
-                value={lng} onChange={(e) => setLng(e.target.value)} />
-            </div>
           </div>
 
           {/* Type-specific */}
