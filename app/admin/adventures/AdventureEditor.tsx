@@ -8,6 +8,7 @@ import { FormField } from '@/components/admin/FormField'
 import { SaveBar } from '@/components/admin/SaveBar'
 import { PostCoverPicker } from '@/components/admin/PostCoverPicker'
 import { WritingAssistant } from '@/components/admin/WritingAssistant'
+import { MarkdownBodyEditor } from '@/components/admin/MarkdownBodyEditor'
 import { DiaryTimeline } from '@/components/admin/DiaryTimeline'
 import { ItineraryPanel } from '@/components/admin/ItineraryPanel'
 import { EntryModal } from '@/components/admin/EntryModal'
@@ -16,6 +17,7 @@ import type { DiaryEntry } from '@/components/admin/EntryModal'
 import type { ItineraryItem } from '@/components/admin/ItineraryPanel'
 import { createAdventure, updateAdventure, deleteAdventure, goLive, goReviewing, type AdventureState } from './actions'
 import { PrepChecklist, type PrepItem } from '@/components/admin/PrepChecklist'
+import { LocationPicker, type LocationValue } from '@/components/admin/LocationPicker'
 import type { Tables } from '@/db/types'
 import { Plus, Map, List, Route, BarChart2, Tent, Fuel, AlertTriangle, Wrench } from 'lucide-react'
 
@@ -126,6 +128,8 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
   const [prepItems, setPrepItems] = useState<PrepItem[]>(
     Array.isArray(adventure?.prep_items) ? (adventure.prep_items as unknown as PrepItem[]) : []
   )
+  const [mapLat, setMapLat] = useState<number | null>(adventure?.lat ?? null)
+  const [mapLng, setMapLng] = useState<number | null>(adventure?.lng ?? null)
   const [actionMsg, setActionMsg] = useState('')
   const [actionPending, startActionTransition] = useTransition()
 
@@ -371,17 +375,16 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
           />
 
           <div className="space-y-2">
-            <LocalizedInput
+            <MarkdownBodyEditor
               label={status === 'dreaming' ? 'Thoughts & wishlist' : 'About this adventure'}
-              nameEn="body_en"
-              nameDe="body_de"
-              defaultEn={locStr(adventure?.body)}
+              name="body_en"
+              defaultValue={locStr(adventure?.body)}
               placeholder={status === 'dreaming'
-                ? 'Everything that keeps drawing you back to this idea — places, people, stories you\'ve heard. Markdown OK.'
-                : 'Full adventure write-up in Markdown…'}
-              multiline
+                ? 'Everything that keeps drawing you back to this idea — places, people, stories you\'ve heard.'
+                : 'Full adventure write-up…'}
               rows={12}
             />
+            <input type="hidden" name="body_de" value="" />
             <WritingAssistant
               getText={() => getField('body_en')}
               onApply={(text) => setField('body_en', text)}
@@ -473,9 +476,20 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
             </FormField>
           </div>
 
-          {/* Hidden lat/lng preserved so existing map data isn't lost */}
-          <input type="hidden" name="lat" value={adventure?.lat ?? ''} />
-          <input type="hidden" name="lng" value={adventure?.lng ?? ''} />
+          {/* Map centre — sets default view for the diary map */}
+          <FormField label="Map centre" hint="Used as the default map position for the diary view. Search or use current location.">
+            <LocationPicker
+              defaultLat={adventure?.lat}
+              defaultLng={adventure?.lng}
+              placeholder="Search for a country, region, or starting point…"
+              onChange={(v: LocationValue | null) => {
+                setMapLat(v?.lat ?? null)
+                setMapLng(v?.lng ?? null)
+              }}
+            />
+          </FormField>
+          <input type="hidden" name="lat" value={mapLat ?? ''} />
+          <input type="hidden" name="lng" value={mapLng ?? ''} />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField label="Published date">
@@ -569,8 +583,8 @@ export function AdventureEditor({ adventure }: { adventure?: Adventure }) {
                           entries={markers}
                           onMapClick={handleMapClick}
                           onMarkerClick={handleMarkerClick}
-                          defaultLat={adventure.lat}
-                          defaultLng={adventure.lng}
+                          defaultLat={mapLat}
+                          defaultLng={mapLng}
                         />
                       </div>
                       <div className="h-64 overflow-y-auto border-t border-line lg:h-full lg:w-80 lg:border-l lg:border-t-0">

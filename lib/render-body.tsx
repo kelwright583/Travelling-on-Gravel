@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
  */
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = []
-  const regex = /\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*/g
+  const regex = /\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|~~(.+?)~~/g
   let last = 0
   let match: RegExpExecArray | null
 
@@ -19,6 +19,8 @@ function renderInline(text: string): ReactNode[] {
       nodes.push(<strong key={match.index}>{match[2]}</strong>)
     } else if (match[3]) {
       nodes.push(<em key={match.index}>{match[3]}</em>)
+    } else if (match[4]) {
+      nodes.push(<del key={match.index}>{match[4]}</del>)
     }
 
     last = regex.lastIndex
@@ -41,7 +43,8 @@ function renderInline(text: string): ReactNode[] {
  *   blank line     → vertical spacer
  */
 export function renderBody(text: string): ReactNode[] {
-  return text.split('\n').map((line, i) => {
+  // Normalise Windows (\r\n) and old Mac (\r) line endings
+  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').map((line, i) => {
     if (line.startsWith('### ')) {
       return (
         <h4 key={i} className="font-display mb-2 mt-5 text-base font-700 uppercase tracking-wide text-bone">

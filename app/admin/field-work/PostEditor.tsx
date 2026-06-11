@@ -8,6 +8,7 @@ import { SaveBar } from '@/components/admin/SaveBar'
 import { PostCoverPicker } from '@/components/admin/PostCoverPicker'
 import { AiButton } from '@/components/admin/AiButton'
 import { WritingAssistant } from '@/components/admin/WritingAssistant'
+import { MarkdownBodyEditor } from '@/components/admin/MarkdownBodyEditor'
 import { createPost, updatePost, deletePost, type PostState } from './actions'
 import type { Tables } from '@/db/types'
 
@@ -202,15 +203,15 @@ export function PostEditor({ post }: { post?: Post }) {
         </div>
 
         <div className="space-y-2">
-          <LocalizedInput
-            label="Body (Markdown)"
-            nameEn="body_en"
-            nameDe="body_de"
-            defaultEn={locStr(post?.body)}
-            placeholder="Full post content in Markdown…"
-            multiline
+          <MarkdownBodyEditor
+            label="Body"
+            name="body_en"
+            defaultValue={locStr(post?.body)}
+            placeholder="Full post content…"
             rows={16}
           />
+          {/* Hidden DE field — keeps form action compatible */}
+          <input type="hidden" name="body_de" value="" />
           <WritingAssistant
             getText={() => getField('body_en')}
             onApply={(text) => setField('body_en', text)}
