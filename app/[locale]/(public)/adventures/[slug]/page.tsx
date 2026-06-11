@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { t } from '@/lib/i18n/types'
+import { renderBody } from '@/lib/render-body'
 import { AdventureCountdown } from '@/components/public/AdventureCountdown'
 import { CurrencyDisplay } from '@/components/public/CurrencyDisplay'
 import { RouteMap } from '@/components/public/RouteMapClient'
@@ -61,17 +62,6 @@ function timeAgo(iso: string): string {
 
 function daysBetween(a: string, b: string) {
   return Math.ceil((new Date(b).getTime() - new Date(a).getTime()) / 86400000) + 1
-}
-
-function renderBody(text: string) {
-  return text.split('\n').map((line, i) => {
-    if (line.startsWith('# '))
-      return <h2 key={i} className="font-display mb-4 mt-8 text-2xl font-800 uppercase text-bone">{line.slice(2)}</h2>
-    if (line.startsWith('## '))
-      return <h3 key={i} className="font-display mb-3 mt-6 text-xl font-700 uppercase text-bone">{line.slice(3)}</h3>
-    if (line.trim() === '') return <div key={i} className="h-4" />
-    return <p key={i} className="mb-4">{line}</p>
-  })
 }
 
 // ── STATUS LABEL ─────────────────────────────────────────────────────────────
