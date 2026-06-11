@@ -45,19 +45,19 @@ export function SiteNav() {
           : 'bg-transparent',
       ].join(' ')}
     >
-      <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-4">
-        {/* Logo */}
+      <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-2">
+        {/* Logo — FAB-style: oversized circular badge that floats proud of the nav bar */}
         <Link
           href="/"
           aria-label="Travelling on Gravel — home"
-          className="flex-shrink-0"
+          className="flex-shrink-0 translate-y-3 transition-transform duration-200 hover:scale-105"
         >
           <Image
             src="/brand/logo-full.png"
             alt="Travelling on Gravel"
-            height={44}
-            width={44}
-            className="h-11 w-auto rounded-full"
+            height={72}
+            width={72}
+            className="h-[72px] w-[72px] rounded-full shadow-[0_6px_28px_rgba(0,0,0,0.55)] ring-2 ring-bone/10"
             priority
           />
         </Link>
