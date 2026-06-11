@@ -32,6 +32,14 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Gravel',
+    startupImage: '/icons/icon-512.png',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/icons/icon-192.png',
   },
 }
 
@@ -54,7 +62,7 @@ const getCachedTheme = unstable_cache(
 )
 
 export const viewport: Viewport = {
-  themeColor: '#15150F',
+  themeColor: '#111111',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -5,17 +5,17 @@
  */
 
 export const defaultTokens = {
-  // Colour palette
-  '--bone': '#EFEAD9',
-  '--khaki': '#B9A77B',
-  '--khaki-deep': '#8E7C50',
-  '--olive': '#3B4329',
-  '--olive-2': '#535C3A',
-  '--ink': '#15150F',
-  '--ink-soft': '#21211A',
-  '--accent': '#D75E2C',
-  '--accent-soft': '#E8814F',
-  '--line': 'rgba(239,234,217,.14)',
+  // Colour palette — Travelling on Gravel brand v1
+  '--bone': '#F8E8D8',      // Warm Cream
+  '--khaki': '#E9D6BE',     // Dust Sand
+  '--khaki-deep': '#5C5A55', // Gravel Grey
+  '--olive': '#4B563F',     // Olive Track
+  '--olive-2': '#5F6E50',   // Olive Track light
+  '--ink': '#111111',       // Gravel Black
+  '--ink-soft': '#1E1E1C',  // Deep Charcoal
+  '--accent': '#EA5B12',    // Sunset Orange
+  '--accent-soft': '#C9470D', // Sunset Hover
+  '--line': 'rgba(248,232,216,.14)',
 } as const
 
 export type ThemeTokenKey = keyof typeof defaultTokens

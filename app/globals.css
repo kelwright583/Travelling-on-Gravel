@@ -6,16 +6,16 @@
    SSR injects overrides as inline <style> on <html> to avoid FOUC.
    ============================================================ */
 :root {
-  --bone: #efead9;
-  --khaki: #b9a77b;
-  --khaki-deep: #8e7c50;
-  --olive: #3b4329;
-  --olive-2: #535c3a;
-  --ink: #15150f;
-  --ink-soft: #21211a;
-  --accent: #d75e2c;
-  --accent-soft: #e8814f;
-  --line: rgba(239, 234, 217, 0.14);
+  --bone: #f8e8d8;
+  --khaki: #e9d6be;
+  --khaki-deep: #5c5a55;
+  --olive: #4b563f;
+  --olive-2: #5f6e50;
+  --ink: #111111;
+  --ink-soft: #1e1e1c;
+  --accent: #ea5b12;
+  --accent-soft: #c9470d;
+  --line: rgba(248, 232, 216, 0.14);
 
   --font-display: var(--font-montserrat), "Montserrat", sans-serif;
   --font-body: var(--font-inter), "Inter", sans-serif;

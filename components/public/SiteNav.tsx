@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
 import { PwaInstallButton } from './PwaInstallButton'
 
 export function SiteNav() {
@@ -48,10 +49,17 @@ export function SiteNav() {
         {/* Logo */}
         <Link
           href="/"
-          className="font-display text-sm font-800 uppercase tracking-widest text-bone"
           aria-label="Travelling on Gravel — home"
+          className="flex-shrink-0"
         >
-          Travelling on Gravel
+          <Image
+            src="/brand/logo-full.png"
+            alt="Travelling on Gravel"
+            height={44}
+            width={44}
+            className="h-11 w-auto rounded-full"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
